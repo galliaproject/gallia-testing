@@ -1,13 +1,6 @@
 package galliatest.suites
 
-import aptus.{Anything_, String_, Seq_}
-import aptus.Nes
-import aptus.Pes
-
 import gallia._
-import gallia.vldt.ErrorId ._
-import gallia.vldt._Error
-import gallia.domain.AObj
 
 // ===========================================================================
 object TranslateTest extends gallia.testing.Suite {
@@ -19,7 +12,7 @@ object TranslateTest extends gallia.testing.Suite {
     test3(in = Default10)
     
     // ---------------------------------------------------------------------------
-    Default10.translate(_.soleKey).usingLenient("foo" -> "oof").metaError(MoreThanOneKey)
+    Default10.translate(_.soleKey).usingLenient("foo" -> "oof").metaError(vldt.ErrorId.MoreThanOneKey)
     Default11.translate(_.soleKey).usingLenient("foo" -> "oof").check(bobj('f -> "oof"))
     Default11.translate(_.soleKey).usingStrict ("foo" -> 3    ).check(bobj('f -> 3))
 
@@ -52,15 +45,15 @@ object TranslateTest extends gallia.testing.Suite {
   private def test2(in: BObj) {  
     in.translate(_.indices(0,  1)).using("foo" -> "oof").check(bobj('f1 -> "oof", 'f2 -> "oof", 'g -> 1))
     in.translate(_.indices(0, -2)).using("foo" -> "oof").check(bobj('f1 -> "oof", 'f2 -> "oof", 'g -> 1))
-    in.translate(_.indices(0,  5)).using("foo" -> "oof").metaError(OutOfBoundKey)
-    in.translate(_.indices(0, -5)).using("foo" -> "oof").metaError(OutOfBoundKey)
+    in.translate(_.indices(0,  5)).using("foo" -> "oof").metaError(vldt.ErrorId.OutOfBoundKey)
+    in.translate(_.indices(0, -5)).using("foo" -> "oof").metaError(vldt.ErrorId.OutOfBoundKey)
   }
     
   // ===========================================================================
   private def test3(in: BObj) {
     in.translate(_.ifString           ).usingLenient("" -> ".", "@@@" -> "@").check(bobj('f -> ".", 'g -> 1, 'h -> ".", 'p -> bobj('pf ->  "", 'pg -> 2)))
     in.translate(_.ifStringRecursively).usingLenient("" -> ".", "@@@" -> "@").check(bobj('f -> ".", 'g -> 1, 'h -> ".", 'p -> bobj('pf -> ".", 'pg -> 2)))
-    in.translate(_.soleKey).usingLenient("" -> 0).metaError(MoreThanOneKey)
+    in.translate(_.soleKey).usingLenient("" -> 0).metaError(vldt.ErrorId.MoreThanOneKey)
     
     in.translate(_.ifString           ).usingLenient("" -> 0).metaError("201105140603", "MustBeSameType")
     in.translate(_.ifString           ).usingStrict ("" -> 0).check(bobj('f -> 0, 'g -> 1, 'h -> 0, 'p -> bobj('pf -> "", 'pg -> 2)))
