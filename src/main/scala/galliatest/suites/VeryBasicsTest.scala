@@ -39,7 +39,7 @@ object VeryBasicsTest extends gallia.testing.Suite {
     // ===========================================================================
     { // mix
       implicit val in = Default09
-        in.retain(_.allKeys)      noop
+        in.noop(_.retain(_.allKeys))
 
         in.remove(_.explicit('f)) check bobj('p -> Default01, 'z -> true)
         in.retain(_.explicit('f)) check bobj(                                      'f -> "foo")

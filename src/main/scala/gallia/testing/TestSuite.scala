@@ -49,9 +49,6 @@ trait Suite {
     protected def end = u.end()
 
     // ===========================================================================
-    def noop (implicit in: BObj) = check(in)
-
-    // ---------------------------------------------------------------------------
     def check(expected: BObj) { check(expected.forceAObj) }
     def check(expected: AObj) { addResult(TestValue.__check(end, expected)) }
   }
@@ -61,9 +58,6 @@ trait Suite {
     protected def end = u.end()
 
     // ===========================================================================
-    def noop (implicit in: BObjs) = check(in)
-
-    // ---------------------------------------------------------------------------
     def check(value1: BObj, more: BObj*)       { check(BObjs(value1 +: more)) }
     def check(implicit expected: BObjs)        { check(expected.forceAObjs) }
     def check(c: Cls)(value1: Obj, more: Obj*) { check(aobjs(c)((value1 +: more):_*)) }

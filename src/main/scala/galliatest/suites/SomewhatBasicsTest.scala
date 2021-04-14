@@ -47,11 +47,9 @@ object SomewhatBasicsTest extends gallia.testing.Suite {
     if (false) // TODO: catch error properly, right now it selected Seq(Symbol(""), Symbol(""))
       bobj('f -> "foo", 'gg -> 1).rename(_.tail.tail) metaError gallia.vldt.ErrorId.CouldNotRenameDynamically // "f - empty.tail"
 
-    implicit val in = bobj('f -> "foo", 'gg -> 1)
-
-      in.forEachKey(_.customKeys(_.tail.tail)).zen((u, k) => u.rename(k ~> k.name.toUpperCase)) noop
-
-      in.forEachKey(_.customKeys(_.tail     )).zen((u, k) => u.rename(k ~> k.name.toUpperCase)) check bobj('f -> "foo", 'GG -> 1)
+    val in = bobj('f -> "foo", 'gg -> 1)
+      in.noop(_.forEachKey(_.customKeys(_.tail.tail)).zen((u, k) => u.rename(k ~> k.name.toUpperCase)))
+      in       .forEachKey(_.customKeys(_.tail     )).zen((u, k) => u.rename(k ~> k.name.toUpperCase)) check bobj('f -> "foo", 'GG -> 1)
   }
 
   // ===========================================================================

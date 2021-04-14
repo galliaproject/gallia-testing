@@ -24,11 +24,11 @@ object AssertTest extends gallia.testing.Suite {
 
   // ===========================================================================
   private def testMiscAsserts(implicit in: BObj) {
-    in .assertMeta(_.size == 2).noop
-    in .assertIsOne   ('f).noop
-    in .assertIsString('f).noop
-    in .assertField   ('f).matches(_.isOne).noop
-    in .forKey(_.firstKey).zen(_ assertIsOne _).noop
+    in .noop(_.assertMeta(_.size == 2))
+    in .noop(_.assertIsOne   ('f))
+    in .noop(_.assertIsString('f))
+    in .noop(_.assertField   ('f).matches(_.isOne))
+    in .noop(_.forKey(_.firstKey).zen(_ assertIsOne _))
 
     in.assertIsString('g).metaError[_Error.ContaineeAssertionFailure]
 

@@ -52,7 +52,7 @@ object PivotingTest extends gallia.testing.Suite {
             bobj('f1 -> "f12", 'f2 -> "f22", 'a_z -> 64            , 'c_x ->  125).toNonRequired('a_z,      'c_x) ) )
 
     // ===========================================================================
-    testFoo(
+    testPivot(
         in = aobjs(cls('f.string, 'g.string, 'h.int_))(
           obj('f -> "f1", 'g -> "a", 'h -> 1),
           obj('f -> "f1", 'g -> "a"  /* 2 */),
@@ -69,7 +69,6 @@ object PivotingTest extends gallia.testing.Suite {
             bobj('f -> "f2", 'a -> 4            , 'c ->  5).toNonRequired('a,     'c)) )
 
   }
-
 
   // ===========================================================================
   private def testNoRowsPivot00(in: BObjs) {
@@ -147,8 +146,9 @@ object PivotingTest extends gallia.testing.Suite {
      .check(out)
   }
 
+
   // ===========================================================================
-  private def testFoo(in: AObjs, out1: AObjs, out2: AObjs) {
+  private def testPivot(in: AObjs, out1: AObjs, out2: AObjs) {
     in.pivot(       'h )                 .rows('f).column('g).asNewKeys('a, 'b, 'c).check(out1)
   //in.pivot(       'h ).noAggregation   .rows('f).column('g).asNewKeys('a, 'b, 'c).check(out1)
     in.pivot(_.int_('h)).noAggregation   .rows('f).column('g).asNewKeys('a, 'b, 'c).check(out1)
@@ -159,7 +159,7 @@ object PivotingTest extends gallia.testing.Suite {
   //in.                              pivot(_.int_('h)).using(_.map(_.getOrElse(-1)).product).rows('f).column('g).asNewKeys('a, 'b, 'c).check(out2)// not allowed (c200930125015)
     in.setDefaultFor('h).asValue(-1).pivot(_.int ('h)).using(_                     .product).rows('f).column('g).asNewKeys('a, 'b, 'c).check(out2)
   }
-
+    
 }
 
 // ===========================================================================
