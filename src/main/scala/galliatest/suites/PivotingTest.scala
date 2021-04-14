@@ -5,9 +5,9 @@ import gallia._
 // ===========================================================================
 object PivotingTest extends gallia.testing.Suite {
   import TestDataS.{Default51, Default52}
-  
+
   // ===========================================================================
-  override def test() {    
+  override def test() {
     testNoRowsPivot00(in = bobjs(
         bobj('f -> 1, 'g -> "a"),
         bobj('f -> 2, 'g -> "b"),
@@ -18,7 +18,7 @@ object PivotingTest extends gallia.testing.Suite {
     testNoRowsPivot0(out = AObj(
       cls('foo.int_, 'foo2.int_),
       obj('foo -> 1, 'foo2 -> 2)))
-     
+
     // ---------------------------------------------------------------------------
     testNoRowsPivot(
       in = bobjs(
@@ -39,14 +39,14 @@ object PivotingTest extends gallia.testing.Suite {
 
     // ===========================================================================
     testPivotEmulation(
-      in = 
+      in =
           bobjs(
             bobj('f1 -> "f11", 'f2 -> "f21", 'g1 -> "a", 'g2 -> "z", 'h1 -> 1, 'h2 ->  1),
             bobj('f1 -> "f11", 'f2 -> "f21", 'g1 -> "a", 'g2 -> "z", 'h1 -> 2, 'h2 ->  4),
             bobj('f1 -> "f11", 'f2 -> "f21", 'g1 -> "b", 'g2 -> "y", 'h1 -> 3, 'h2 ->  9),
             bobj('f1 -> "f12", 'f2 -> "f22", 'g1 -> "a", 'g2 -> "z", 'h1 -> 4, 'h2 -> 16),
             bobj('f1 -> "f12", 'f2 -> "f22", 'g1 -> "c", 'g2 -> "x", 'h1 -> 5, 'h2 -> 25) ),
-      out = 
+      out =
           aobjs(
             bobj('f1 -> "f11", 'f2 -> "f21", 'a_z ->  9, 'b_y -> 27              ).toNonRequired('a_z, 'b_y),
             bobj('f1 -> "f12", 'f2 -> "f22", 'a_z -> 64            , 'c_x ->  125).toNonRequired('a_z,      'c_x) ) )
@@ -67,16 +67,16 @@ object PivotingTest extends gallia.testing.Suite {
         out2 = aobjs(
             bobj('f -> "f1", 'a -> -1, 'b -> 3            ).toNonRequired('a, 'b),
             bobj('f -> "f2", 'a -> 4            , 'c ->  5).toNonRequired('a,     'c)) )
-    
+
   }
 
 
   // ===========================================================================
   private def testNoRowsPivot00(in: BObjs) {
-	  in.transformString('g).using(_ => "").group('f).by('g).pivot('f).column('g).asNewKeys('a, 'b).dataError(vldt.ErrorId.Runtime.EmptyKey)
-	  
-	  in.group('f).by('g).pivot('f).column('g).asNewKeys('a, 'b)             .check(bobj('a -> Seq(1, 1), 'b -> Seq(2, 2)).toNonRequired('a, 'b))
-    in.group('f).by('g).unarrayEntries  ('g).asNewKeys('a, 'b).valueKey('f).check(bobj('a -> Seq(1, 1), 'b -> Seq(2, 2)).toNonRequired('a, 'b))       
+    in.transformString('g).using(_ => "").group('f).by('g).pivot('f).column('g).asNewKeys('a, 'b).dataError(vldt.ErrorId.Runtime.EmptyKey)
+
+    in.group('f).by('g).pivot('f).column('g).asNewKeys('a, 'b)             .check(bobj('a -> Seq(1, 1), 'b -> Seq(2, 2)).toNonRequired('a, 'b))
+    in.group('f).by('g).unarrayEntries  ('g).asNewKeys('a, 'b).valueKey('f).check(bobj('a -> Seq(1, 1), 'b -> Seq(2, 2)).toNonRequired('a, 'b))
     in.group('f).by('g).unarrayBy0      ('g).asNewKeys('a, 'b) //FIXME: t210303103728 - meta and data disagree
   }
 
@@ -86,12 +86,12 @@ object PivotingTest extends gallia.testing.Suite {
     Default52.pivot('g).column('f).asNewKeys("foo", "foo2")             .dataError(vldt.ErrorId.Runtime.NotUnique)
     Default51.unarrayEntries  ('f).asNewKeys("foo", "foo2").valueKey('g).check(out)
     Default51.pivot('g).column('f).asNewKeys("foo", "foo2")             .check(out)
-    
+
     //Default51.pivotValue('g).columns('f).asNewKeys("foo", "foo2")
     //Default51.pivotBy   ('f -> Seq("foo", "foo2"))
-    //Default51.pivot('g).noAggregation.noRows.columns('f).asNewKeys("foo", "foo2")    
+    //Default51.pivot('g).noAggregation.noRows.columns('f).asNewKeys("foo", "foo2")
   }
-  
+
   // ===========================================================================
   private def testNoRowsPivot(in: BObjs, inDistinct: BObjs, out: AObjs) {
     in.pivot(_.int('h)).using(identity).rows('f).column('g).asNewKeys('a, 'b, 'c).check(out)
@@ -108,9 +108,9 @@ object PivotingTest extends gallia.testing.Suite {
     inDistinct             .unarrayBy0('f, 'g).asNewKeys('f1_a,               'f2_c).withDefaultKeySeparator.check(bobj('f1_a -> bobj('h -> 1)           , 'f2_c -> bobj('h -> 5)))
     in.group('h).by('f, 'g).unarrayBy0('f, 'g).asNewKeys('f1_a, 'f1_b, 'f2_a, 'f2_c).withDefaultKeySeparator.check(bobj('f1_a -> bobj('h -> Seq(1, 2)), 'f1_b -> bobj('h -> Seq(3)), 'f2_a -> bobj('h -> Seq(4)), 'f2_c -> bobj('h -> Seq(5))))
   }
-  
+
   // ===========================================================================
-  private def testPivotEmulation(in: BObjs, out: AObjs) {  
+  private def testPivotEmulation(in: BObjs, out: AObjs) {
 
     // manual pivot 1 (meh)
     in
@@ -124,12 +124,12 @@ object PivotingTest extends gallia.testing.Suite {
           .fuse('g1, 'g2).as('g).using(_ + "_" + _)
           .pivot('_group2).column('g).asNewKeys('a_z, 'b_y, 'c_x) }
       .unnestAllFrom('_group1)
-      .check(out)  
+      .check(out)
 
     // ---------------------------------------------------------------------------
     // manual pivot 2 (better)
     in
-      .fuse('g1, 'g2).as('g).using(_ + "_" + _)    
+      .fuse('g1, 'g2).as('g).using(_ + "_" + _)
       .fuse('h1, 'h2).as('h).using(_ * _)
       .groupBy('f1, 'f2)
       .transformGroupObjectsUsing {
@@ -146,16 +146,16 @@ object PivotingTest extends gallia.testing.Suite {
        .pivot(_.int('h)).usingSum.rows('f1, 'f2).column('g).asNewKeys('a_z, 'b_y, 'c_x)
      .check(out)
   }
-  
+
   // ===========================================================================
-  private def testFoo(in: AObjs, out1: AObjs, out2: AObjs) {      
+  private def testFoo(in: AObjs, out1: AObjs, out2: AObjs) {
     in.pivot(       'h )                 .rows('f).column('g).asNewKeys('a, 'b, 'c).check(out1)
   //in.pivot(       'h ).noAggregation   .rows('f).column('g).asNewKeys('a, 'b, 'c).check(out1)
     in.pivot(_.int_('h)).noAggregation   .rows('f).column('g).asNewKeys('a, 'b, 'c).check(out1)
     in.pivot(_.int_('h)).using(_.flatten).rows('f).column('g).asNewKeys('a, 'b, 'c).check(out1)
   //if (false) in.pivot(       'h ) .using(_.map(_ + 1)).rows('f).column('g).asNewKeys('a, 'b, 'c).test
 
-    // ---------------------------------------------------------------------------    
+    // ---------------------------------------------------------------------------
   //in.                              pivot(_.int_('h)).using(_.map(_.getOrElse(-1)).product).rows('f).column('g).asNewKeys('a, 'b, 'c).check(out2)// not allowed (c200930125015)
     in.setDefaultFor('h).asValue(-1).pivot(_.int ('h)).using(_                     .product).rows('f).column('g).asNewKeys('a, 'b, 'c).check(out2)
   }

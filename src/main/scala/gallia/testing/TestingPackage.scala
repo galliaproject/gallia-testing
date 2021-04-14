@@ -11,9 +11,9 @@ package object testing {
   // ===========================================================================
   def testSuites(suite1: Suite, more: Suite*) {
     ignoreStdErr()
-    
+
     (suite1 +: more).foreach(_.test())
-    
+
     TestResult.printResults()
   }
 
@@ -21,7 +21,7 @@ package object testing {
   def ignoreStdErr() {
     System.setErr(
       new java.io.PrintStream(
-        new java.io.OutputStream() { 
+        new java.io.OutputStream() {
           def write(x: Int) {} })) }
 
   // ===========================================================================
@@ -30,7 +30,7 @@ package object testing {
       .copy(c = keys
       .map(_.value)
       .foldLeft(value.c)(_ toNonRequired _))
-  
+
 }
 
-// ===========================================================================  
+// ===========================================================================
