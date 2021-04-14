@@ -9,6 +9,9 @@ object AllTests extends App {
     VeryBasicsTest,
     SomewhatBasicsTest,
 
+    SetDefaultValueForTest,
+    TranslateTest,
+    
     AssertTest,
 
     PivotingTest,
