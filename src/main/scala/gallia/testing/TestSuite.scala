@@ -9,19 +9,23 @@ trait Suite {
 
   // ---------------------------------------------------------------------------
   protected[testing] def test() // TODO: t210413103408 - annotation-based rather (extens sbt-testing directly?)
-
+    
   // ===========================================================================
   def main(args: Array[String]): Unit = { apply() }
 
     // ---------------------------------------------------------------------------
     def apply() {
       ignoreStdErr()
-      test()
-      TestResult.printResults()
+        test()
+      resetStdErr()
+      
+      TestResults.printResults()
     }
 
   // ===========================================================================
-  implicit class BObjs__(u: BObjs) { def noop(f: HeadS => HeadS) = { f(u).check(u) } }
+  implicit class BObjs__(u: BObjs) { def noop(f: HeadS => HeadS) = { f(u).check(u) }
+def equivalents(expected: BObjs)      (fs: HeadZ => HeadZ*) { fs.foreach { f => f(u).check(expected) } }  
+  }
   implicit class AObjs__(u: AObjs) { def noop(f: HeadS => HeadS) = { f(u).check(u) } }
   implicit class AObj__ (u: AObj ) { def noop(f: HeadO => HeadO) = { f(u).check(u) } }
   implicit class BObj__ (u: BObj)  { def noop(f: HeadO => HeadO) = { f(u).check(u) }
@@ -37,8 +41,8 @@ trait Suite {
 
     // ---------------------------------------------------------------------------
     def metaError[$Error <: vldt._Error: WTT] { _metaError(node[$Error].leaf.inScopeName) }
-    def dataError[$Error <: vldt._Error: WTT] { _dataError(node[$Error].leaf.inScopeName) }
-
+    def dataError[$Error <: vldt._Error: WTT] { _dataError(node[$Error].leaf.inScopeName) }       
+    
     // ===========================================================================
     private[Suite] def _metaError(markers: String*) { addResult(TestValue.__metaError(end, markers)) }
     private[Suite] def _dataError(markers: String*) { addResult(TestValue.__dataError(end, markers)) }
@@ -49,8 +53,12 @@ trait Suite {
     protected def end = u.end()
 
     // ===========================================================================
-    def check(expected: BObj) { check(expected.forceAObj) }
-    def check(expected: AObj) { addResult(TestValue.__check(end, expected)) }
+    def checkMetaOnly(expected: Objs) { addResult(TestValue.__check(end, expected)) }
+    def checkDataOnly(expected: Obj)  { addResult(TestValue.__check(end, expected)) }
+
+    // ---------------------------------------------------------------------------
+    def check        (expected: BObj) { addResult(TestValue.__check(end, expected.forceAObj)) }
+    def check        (expected: AObj) { addResult(TestValue.__check(end, expected)) }
   }
 
   // ===========================================================================
@@ -58,14 +66,44 @@ trait Suite {
     protected def end = u.end()
 
     // ===========================================================================
-    def check(value1: BObj, more: BObj*)       { check(BObjs(value1 +: more)) }
+    def checkMetaOnly(expected: Objs) { addResult(TestValue.__check(end, expected)) }
+    def checkDataOnly(expected: Objs) { addResult(TestValue.__check(end, expected)) }
+    
+    // ===========================================================================
     def check(implicit expected: BObjs)        { check(expected.forceAObjs) }
+    def check(value1: BObj, more: BObj*)       { check(BObjs(value1 +: more)) }
     def check(c: Cls)(value1: Obj, more: Obj*) { check(aobjs(c)((value1 +: more):_*)) }
     def check(expected: AObjs)                 { addResult(TestValue.__check(end, expected)) }
+    
+    // ===========================================================================
+    def checkEmpty() { addResult(TestValue.__checkPredicate(end, "expected empty result")(_.isEmpty)) }
   }
 
   // ===========================================================================
-  private def addResult(value: TestValue) { TestResult add TestResult(name, CallSite.generate(), value) }
+  implicit class HeadV__[T](u: HeadV[T]) extends Head__[T] {
+    protected def end = u.end()
+
+    // ===========================================================================
+//    def checkMetaOnly(expected: Objs) { addResult(TestValue.__check(end, expected)) }
+//    def checkDataOnly(expected: Obj)  { addResult(TestValue.__check(end, expected)) }
+//
+//    // ---------------------------------------------------------------------------
+//    def check        (expected: BObj) { addResult(TestValue.__check(end, expected.forceAObj)) }
+//    def check        (expected: AObj) { addResult(TestValue.__check(end, expected)) }
+    def check        (expected: T) { addResult(TestValue.__check(end, expected)) }       
+  }
+
+  // ===========================================================================
+  def throws(v: => Any) { assert(scala.util.Try(v).isFailure, v) } // TODO: port as actual test
+  
+  // ---------------------------------------------------------------------------
+  implicit class Vle__[V](u: V) {
+    def check(f: V => Boolean) { assert(f(u), u) }
+    def check(expected: V    ) { assert(u == expected, (u, expected)) }    
+  }
+  
+  // ===========================================================================
+  private def addResult(value: TestValue) { TestResults add TestResult(name, CallSite.generate(), value) }
 }
 
 // ===========================================================================

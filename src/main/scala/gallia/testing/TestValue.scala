@@ -15,11 +15,18 @@ private object TestValue {
   private def problem(message: String): TestValue = Problem(new Throwable(message))
 
   // ===========================================================================
-  def __check(u: HeadEnd, value: AObj) : TestValue = __check(u, value.c, value.u)
-  def __check(u: HeadEnd, value: AObjs): TestValue = __check(u, value.c, value.z)
+  def __check(u: HeadEnd, value: Cls)  : TestValue = __check(u, Some(value),   None)
+  
+  def __check(u: HeadEnd, value: Obj)  : TestValue = __check(u, None,          Some(value))
+  def __check(u: HeadEnd, value: Objs) : TestValue = __check(u, None,          Some(value))
+  
+  def __check(u: HeadEnd, value: AObj) : TestValue = __check(u, Some(value.c), Some(value.u))
+  def __check(u: HeadEnd, value: AObjs): TestValue = __check(u, Some(value.c), Some(value.z))
 
-    // ---------------------------------------------------------------------------
-    def __check[$Data](u: HeadEnd, expC: Cls, expD: $Data): TestValue =
+def __check[T](u: HeadEnd, value: T) : TestValue = __check(u, None, Some(value))
+
+    // ===========================================================================
+    def __check[$Data](u: HeadEnd, expC: Option[Cls], expD: Option[$Data]): TestValue =
       util.Try { u.run[$Data] } match {
         case util.Failure(f)   => problem(f.getMessage)
         case util.Success(res) =>
@@ -28,11 +35,26 @@ private object TestValue {
             case Right(successResult) if (successResult.leavesCount != 1) => problem(s"210414125643:MultipleLeaves")
             case Right(successResult) =>
               val (meta, data) = successResult.pair
+              
+                   if (expC.exists(_ != meta)) problem(s"\n\nexpected:\n${expC.get}\n\ngot:\n${meta}\n")
+              else if (expD.exists(_ != data)) problem(s"\n\nexpected:\n${expD.get}\n\ngot:\n${data}\n")
+              else                             Ok } }
 
-                   if (meta != expC) problem(s"\n\nexpected:\n${expC}\n\ngot:\n${meta}\n")
-              else if (data != expD) problem(s"\n\nexpected:\n${expD}\n\ngot:\n${data}\n")
-              else                   Ok } }
+    // ===========================================================================
+    def __checkPredicate(u: HeadEnd, msg: String)(f: Objs => Boolean): TestValue =
+      util.Try { u.run[Objs] } match {
+        case util.Failure(f)   => problem(f.getMessage)
+        case util.Success(res) =>
+          res.either match {
+            case Left (metaErrorResult)                                   => problem(s"210414125640:${metaErrorResult.formatDefault}")
+            case Right(successResult) if (successResult.leavesCount != 1) => problem(s"210414125643:MultipleLeaves")
+            case Right(successResult) =>
+              val (_, data) = successResult.pair
+              
+              if (!f(data)) problem(s"\n\n${msg}:\n\ngot:\n${data}\n")
+              else          Ok } }
 
+      
   // ===========================================================================
   def __metaError(end: gallia.heads.HeadEnd, markers: Seq[String]): TestValue =
     Try { end.runMetaOnly().either } match {

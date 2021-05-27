@@ -1,4 +1,4 @@
-package galliatest.suites
+package galliatest.suites.multiple
 
 import gallia._
 

@@ -11,19 +11,25 @@ package object testing {
   // ===========================================================================
   def testSuites(suite1: Suite, more: Suite*) {
     ignoreStdErr()
+      (suite1 +: more).foreach(_.test())
+    resetStdErr()
 
-    (suite1 +: more).foreach(_.test())
-
-    TestResult.printResults()
+    TestResults.printResults()
   }
 
   // ===========================================================================
-  def ignoreStdErr() {
-    System.setErr(
-      new java.io.PrintStream(
-        new java.io.OutputStream() {
-          def write(x: Int) {} })) }
+  private val OriginalErr: java.io.PrintStream = System.err
+  
+    // ---------------------------------------------------------------------------
+    def ignoreStdErr() {      
+      System.setErr(
+        new java.io.PrintStream(
+          new java.io.OutputStream() {
+            def write(ignore: Int) {} })) }
 
+    // ---------------------------------------------------------------------------
+    def resetStdErr() { System.setErr(OriginalErr) }
+    
   // ===========================================================================
   private[testing] def _toNonRequired(value: AObj, keys: Seq[KeyW]): AObj =
     value

@@ -6,16 +6,31 @@ object AllTests extends App {
 
   // ---------------------------------------------------------------------------
   gallia.testing.testSuites(
-    VeryBasicsTest,
-    SomewhatBasicsTest,
+    single.VeryBasicsTest,
+    single.SomewhatBasicsTest,
 
-    SetDefaultValueForTest,
-    TranslateTest,
+    single.SetDefaultValueForTest,
+    single.TranslateTest,
+    single.RemoveIfTest,
     
-    AssertTest,
+    single.AssertTest,
 
-    PivotingTest,
-    MergingTest)
+    single.TransformTest,
+    single.FuseFissionTest,
+    single.GenerateTest,
+    
+    single.UntuplifyTest,
+    single.ZipTest,
+    
+    // ---------------------------------------------------------------------------
+    multiple.FilterTest,
+    multiple.SortingTest,
+    multiple.GroupingTest, 
+    multiple.AggregatingTest,
+    multiple.ReducingTest,
+    multiple.StatsTest,
+    multiple.PivotingTest,
+    multiple.MergingTest)
 
 }
 
