@@ -19,7 +19,8 @@ object TestDataO {
   
   // ---------------------------------------------------------------------------
   val Default02    = bobj('f -> Seq("foo1", "foo2"), 'g -> 1)
-
+  
+    val Default02z = bobj('f -> Seq("foo3", "foo4"), 'g -> 3)
     val Default02b = bobj('f -> Seq(1  , 2  , 3  ), 'g -> 1)
     val Default02c = bobj('f -> Seq(1.1, 2.2, 3.3), 'g -> 1)
   

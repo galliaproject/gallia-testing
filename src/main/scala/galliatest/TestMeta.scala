@@ -4,6 +4,8 @@ package galliatest
 object TestMeta {
   case class Foo(a: String, A: String)
 
+  case class Bar(a: String, A: String, i: Int)
+  
   case class Baz1(a: String, A: String, q:               Qux  )
   case class Baz2(a: String, A: String, q:        Option[Qux] )
   case class Baz3(a: String, A: String, q:        Seq   [Qux] ) { require(q         .nonEmpty , this) }

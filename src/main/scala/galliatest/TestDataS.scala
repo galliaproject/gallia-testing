@@ -18,6 +18,8 @@ object TestDataS {
   val Default57  = aobjs(Default13p, Default13m, Default13p2, Default13p) // f.string_
   val Default59  = aobjs(Default14p, Default14m, Default14p2, Default14p) // f.strings_
 
+  val Default60  = bobjs(Default02, Default02z)
+
   val yyy  = bobjs(Default06a, Default06b, Default06a)
 //private val yyy2 = bobjs(bobj('f1 -> "foo1", 'g -> 2), bobj('f1 -> "foo3", 'g -> 3 ) )
   
