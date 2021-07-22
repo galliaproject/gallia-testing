@@ -79,7 +79,7 @@ object MergingTest extends gallia.testing.Suite {
   private def testLeftCoGroup() {
     left
         .leftCoGroup(right1, on = 'f).flattenByBoth
-      .check(cls('f.string, _left.cls_('g.string), _right.cls_('G.string)))(
+      .check(cls('f.string, _left.cls('g.string), _right.cls_('G.string)))(
           obj('f -> "f1" , _left -> obj('g -> "a") , _right -> obj('G -> "a")),
           obj('f -> "f2" , _left -> obj('g -> "b")),
           obj('f -> "f2" , _left -> obj('g -> "a")) )
@@ -89,7 +89,7 @@ object MergingTest extends gallia.testing.Suite {
   private def testLeftJoin() {
     left
         .leftJoin(right1)
-      .check(cls('f.string, 'g.string_, 'G.string_))(
+      .check(cls('f.string, 'g.string, 'G.string_))(
           obj('f -> "f1" , 'g -> "a" , 'G -> "a"),
           obj('f -> "f2" , 'g -> "b"),
           obj('f -> "f2" , 'g -> "a"))
