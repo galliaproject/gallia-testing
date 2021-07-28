@@ -19,18 +19,18 @@ object ConvertTest extends gallia.testing.Suite {
     Default03.convert('p |> 'g).toDouble.check(bobj('p ->     bobj('f -> "foo", 'g -> 1.0)                                , 'z -> true))
     Default04.convert('p |> 'g).toDouble.check(bobj('p -> Seq(bobj('f -> "foo", 'g -> 1.0), bobj('f -> "foo2", 'g -> 2.0)), 'z -> true))
 
-    val XXp = aobj(cls('f.string, 'g.int_))(obj('f -> "foo", 'g ->  1 ))
-    val XXm = aobj(cls('f.string, 'g.int_))(obj('f -> "foo"           ))
+    val outputPresent = aobj(cls('f.string, 'g.int_))(obj('f -> "foo", 'g ->  1 ))
+    val outputMissing = aobj(cls('f.string, 'g.int_))(obj('f -> "foo"           ))
 
-    Default01.convert('g).toNonRequired                  .check(XXp)
-    Default01.convert('g).toNonRequired(strict = true)   .check(XXp)
-    Default01.customField('g).using(_.toNonRequired)     .check(XXp)
-    Default01.customU2U(_.toNonRequired('g), identity)   .check(XXp)
+    Default01.convert('g).toNonRequired                  .check(outputPresent)
+    Default01.convert('g).toNonRequired(strict = true)   .check(outputPresent)
+    Default01.customField('g).using(_.toNonRequired)     .check(outputPresent)
+    Default01.customU2U(_.toNonRequired('g), identity)   .check(outputPresent)
 
-    XXp.convert('g).toRequired               .check(Default01)
-    XXp.convert('g).toRequired(strict = true).check(Default01)
-    XXm.convert('g).toRequired               .dataError("201016153348" -> "")
-    XXm.convert('g).toRequired(strict = true).dataError("201016153348" -> "")
+    outputPresent.convert('g).toRequired               .check(Default01)
+    outputPresent.convert('g).toRequired(strict = true).check(Default01)
+    outputMissing.convert('g).toRequired               .dataError("201016153348" -> "")
+    outputMissing.convert('g).toRequired(strict = true).dataError("201016153348" -> "")
 
     Default01.convert('g).toMultiple               .check(bobj('f -> "foo", 'g -> Seq(1)))
     Default01.convert('g).toMultiple(strict = true).check(bobj('f -> "foo", 'g -> Seq(1)))
@@ -91,26 +91,41 @@ object ConvertTest extends gallia.testing.Suite {
     bobj('value -> "2021-01-08".date).transform(_.date('value)).using(_.getYear.toString).convert('value).toInt.check(bobj('value -> 2021))
 
     // ---------------------------------------------------------------------------
-    val xxx = bobj('p -> Seq(
+    val output3 = bobj('p -> Seq(
         bobj('f -> "a", 'g -> "1"),
         bobj('f -> "b", 'g -> "2"),
         bobj('f -> "c", 'g -> "3")))
 
-    xxx.transformObjects('p).using(_.convert('f)    .toRequired).check(xxx)
-    xxx.transformObjects('p).using(_.convert('f, 'g).toRequired).check(xxx)
+    output3.transformObjects('p).using(_.convert('f)    .toRequired).check(output3)
+    output3.transformObjects('p).using(_.convert('f, 'g).toRequired).check(output3)
 
     if (false) { // getting error 210106171801 --> FIXME: t210110203020 - needs to be able to deal with multiplicity in nesting(s)
-      xxx.convert('p |> 'f)          .toRequired
-      xxx.convert('p |> 'f, 'p |> 'g).toRequired }
+      output3.convert('p |> 'f)          .toRequired
+      output3.convert('p |> 'f, 'p |> 'g).toRequired }
 
     bobj('p -> bobj('f -> "a", 'g -> "1")).noop(_.convert('p |> 'f)          .toRequired)
     bobj('p -> bobj('f -> "a", 'g -> "1")).noop(_.convert('p |> 'f, 'p |> 'g).toRequired)
 
-
-    XXm.convert('g).toRequired.dataError("NotDefined" -> "")
+    outputMissing.convert('g).toRequired.dataError("NotDefined" -> "")
 
     // ---------------------------------------------------------------------------
-    // FIXME - t210301103745: Default01.remove.removeIfValueFor('g).is(1).convert('g).toStr
+    Default01.removeIfValueFor('g).is(1)                  .check(aobj(
+        cls('f.string  , 'g.int_))(
+        obj('f -> "foo")))
+    Default01.removeIfValueFor('g).is(1).convert('g).toStr.check(aobj(
+        cls('f.string  , 'g.string_))(
+        obj('f -> "foo")))
+
+    Default02 .noop(_.convert('f).toStr)    
+    Default13p.noop(_.convert('f).toStr)
+    Default13m.noop(_.convert('f).toStr)
+    Default14p.noop(_.convert('f).toStr)
+    Default14m.noop(_.convert('f).toStr)
+    
+    Default13p.transformString('f).using(_.size).convert('f).toStr.check(aobj(cls('f.string_ , 'g.int))(obj('f ->     "3"      , 'g -> 1)))
+    Default13m.transformString('f).using(_.size).convert('f).toStr.check(aobj(cls('f.string_ , 'g.int))(obj(                     'g -> 1)))
+    Default14p.transformString('f).using(_.size).convert('f).toStr.check(aobj(cls('f.strings_, 'g.int))(obj('f -> Seq("4", "4"), 'g -> 1)))
+    Default14m.transformString('f).using(_.size).convert('f).toStr.check(aobj(cls('f.strings_, 'g.int))(obj(                     'g -> 1)))
   }
 
 }
