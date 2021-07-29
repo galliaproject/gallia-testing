@@ -2,6 +2,7 @@ package galliatest.suites.single
 
 import aptus.String_ // for .date
 import gallia._
+import gallia.vldt._Error.Runtime
 
 // ===========================================================================
 object ConvertTest extends gallia.testing.Suite {
@@ -29,8 +30,8 @@ object ConvertTest extends gallia.testing.Suite {
 
     outputPresent.convert('g).toRequired               .check(Default01)
     outputPresent.convert('g).toRequired(strict = true).check(Default01)
-    outputMissing.convert('g).toRequired               .dataError("201016153348" -> "")
-    outputMissing.convert('g).toRequired(strict = true).dataError("201016153348" -> "")
+    outputMissing.convert('g).toRequired               .dataError[Runtime.NotDefined]
+    outputMissing.convert('g).toRequired(strict = true).dataError[Runtime.NotDefined]
 
     Default01.convert('g).toMultiple               .check(bobj('f -> "foo", 'g -> Seq(1)))
     Default01.convert('g).toMultiple(strict = true).check(bobj('f -> "foo", 'g -> Seq(1)))
@@ -96,12 +97,24 @@ object ConvertTest extends gallia.testing.Suite {
         bobj('f -> "b", 'g -> "2"),
         bobj('f -> "c", 'g -> "3")))
 
+    val output4p = aobj('p.clss('f.string_, 'g.string))(obj('p -> Seq(
+        obj('f -> "a", 'g -> "1"),
+        obj('f -> "b", 'g -> "2"),
+        obj('f -> "c", 'g -> "3"))))
+
+    val output4m = aobj('p.clss('f.string_, 'g.string))(obj('p -> Seq(
+        obj('f -> "a", 'g -> "1"),
+        obj(           'g -> "2"),
+        obj('f -> "c", 'g -> "3"))))
+
     output3.transformObjects('p).using(_.convert('f)    .toRequired).check(output3)
     output3.transformObjects('p).using(_.convert('f, 'g).toRequired).check(output3)
+    
+    output3.noop(_.convert('p |> 'f)          .toRequired)
+    output3.noop(_.convert('p |> 'f, 'p |> 'g).toRequired)
 
-    if (false) { // getting error 210106171801 --> FIXME: t210110203020 - needs to be able to deal with multiplicity in nesting(s)
-      output3.convert('p |> 'f)          .toRequired
-      output3.convert('p |> 'f, 'p |> 'g).toRequired }
+    output4p.convert('p |> 'f).toRequired.check(output3)
+    output4m.convert('p |> 'f).toRequired.dataError[Runtime.NotDefined]
 
     bobj('p -> bobj('f -> "a", 'g -> "1")).noop(_.convert('p |> 'f)          .toRequired)
     bobj('p -> bobj('f -> "a", 'g -> "1")).noop(_.convert('p |> 'f, 'p |> 'g).toRequired)
