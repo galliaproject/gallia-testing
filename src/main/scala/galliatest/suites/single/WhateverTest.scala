@@ -29,15 +29,17 @@ object WhateverTest extends gallia.testing.Suite {
 
 
     //bobj('v -> Seq(1, 2, 3)).transform ('v).using(x => Seq(x +  1 , x +  2 )).check(bobj('v -> Seq(  2 ,   3 ) ))
-     bobj('v -> 1)            .transform ('v).using(x => Seq(x +  1 , x +  2 )).check(bobj('v -> Seq(  2 ,   3 ) ))
-     bobj('v -> 1)            .transform ('v).using(x => Seq(x      , x      )).check(bobj('v -> Seq(  1 ,   1 ) ))
+    
+    // disallowed now:
+    //     bobj('v -> 1)            .transform ('v).using(x => Seq(x +  1 , x +  2 )).check(bobj('v -> Seq(  2 ,   3 ) ))
+    //     bobj('v -> 1)            .transform ('v).using(x => Seq(x      , x      )).check(bobj('v -> Seq(  1 ,   1 ) ))
 
     // ---------------------------------------------------------------------------
-    bobj('v -> 2.0).transform('v).using(_.square)   .check(bobj('v -> 4.0))
-    bobj('v -> 1  ).transform('v).using(_.increment).check(bobj('v -> 2))
-    bobj('v -> true).transform('v).using(_.flip)   .check(bobj('v -> false))
-    bobj('v -> "foo").transform('v).using(_.toUpperCase)   .check(bobj('v -> "FOO"))
-    bobj('v -> "foo").transform('v).using(s => s"|${s}|")   .check(bobj('v -> "|foo|"))
+    bobj('v -> 2.0)  .transform('v).using(_.square)      .check(bobj('v -> 4.0))
+    bobj('v -> 1  )  .transform('v).using(_.increment)   .check(bobj('v -> 2))
+    bobj('v -> true) .transform('v).using(_.flip)        .check(bobj('v -> false))
+    bobj('v -> "foo").transform('v).using(_.toUpperCase) .check(bobj('v -> "FOO"))
+    bobj('v -> "foo").transform('v).using(s => s"|${s}|").check(bobj('v -> "|foo|"))
 
     bobj('v -> "foo").transform('v).using(_.sizeString)   .check(bobj('v -> 3))
 
@@ -62,22 +64,51 @@ object WhateverTest extends gallia.testing.Suite {
     // ===========================================================================
     // transform
 
-    bobj('v -> 1  ).transform ('v).using(x => Seq(x +  1 , x +  2 )).check(bobj('v -> Seq(  2 ,   3 ) ))
-    bobj('v -> 1  ).transform ('v).using(x => Seq(x + "1", x + "2")).check(bobj('v -> Seq("11", "12") ))
+    // disallowed now
+    //  bobj('v -> 1  ).transform ('v).using(x => Seq(x +  1 , x +  2 )).check(bobj('v -> Seq(  2 ,   3 ) ))
+    //  bobj('v -> 1  ).transform ('v).using(x => Seq(x + "1", x + "2")).check(bobj('v -> Seq("11", "12") ))
 
     bobj('v -> 1  ).transform ('v).using(_ + 1  ).check(bobj('v -> 2  ))
 
     bobj('v -> "1").transform ('v).using(_ + "1").check(bobj('v -> "11"))
-    bobj('v -> 1  ).transform ('v).using(_ + "1").check(bobj('v -> "11"))
-    bobj('v -> 1.1).transform ('v).using(_ + "1").check(bobj('v -> "1.11"))
+    bobj('v -> 1  ).transform ('v).using(_ + "1").dataError[RuntimeError.WhateverOperationForbidden] // disallowed now (see 210811144726@design)
+    bobj('v -> 1.1).transform ('v).using(_ + "1").dataError[RuntimeError.WhateverOperationForbidden] // disallowed now (see 210811144726@design)
 
     bobj('v -> 1  ).transform ('v).using(_ +   1).check(bobj('v -> 2  ))
-    bobj('v -> 1  ).transform ('v).using(_ + 1.1).check(bobj('v -> 2.1))
-
-    bobj('v -> 1.1).transform ('v).using(_ + 1  ).dataError("210112140145" -> "")//test(bobj('v -> 2.1))
+    bobj('v -> 1  ).transform ('v).using(_ + 1.1).dataError[RuntimeError.DifferingRuntimeType]
+    bobj('v -> 1.1).transform ('v).using(_ + 1  ).check(bobj('v -> 2.1)) // ok because Double+Int=Double
     bobj('v -> 1.1).transform ('v).using(_ + 1.1).check(bobj('v -> 2.2))
 
-    bobj('v -> 1  ).transform ('v).using(_ + "1").check(bobj('v -> "11"))
+    bobj('v -> 1  ).transform ('v).using(_.increment)  .check(bobj('v -> 2))
+    bobj('v -> 1  ).transform ('v).using(_.toString)   .check(bobj('v -> "1"))
+    bobj('v -> 1  ).transform ('v).using(x => s"${x}b").check(bobj('v -> "1b"))    
+
+    // ---------------------------------------------------------------------------
+    aobj('v.int_ , 'h.boolean)(obj('v -> 1,            'h -> true)).transform ('v).using(_ +   1).check(aobj('v.int_ , 'h.boolean)(obj('v -> 2, 'h -> true)))
+    aobj('v.int_ , 'h.boolean)(obj(                    'h -> true)).transform ('v).using(_ +   1).check(aobj('v.int_ , 'h.boolean)(obj(         'h -> true)))    
+    aobj('v.ints , 'h.boolean)(obj('v -> Seq(1, 2, 3), 'h -> true)).transform ('v).using(_ +   1).check(aobj('v.ints , 'h.boolean)(obj('v -> Seq(2, 3, 4), 'h -> true)))
+    aobj('v.ints_, 'h.boolean)(obj('v -> Seq(1, 2, 3), 'h -> true)).transform ('v).using(_ +   1).check(aobj('v.ints_, 'h.boolean)(obj('v -> Seq(2, 3, 4), 'h -> true)))
+    aobj('v.ints_, 'h.boolean)(obj(                    'h -> true)).transform ('v).using(_ +   1).check(aobj('v.ints_, 'h.boolean)(obj(                    'h -> true)))
+
+      // only requiredness, not multiplicity
+      aobj('v.int_ , 'h.boolean)(obj('v -> 1,            'h -> true)).transform ('v).using(_.increment).check(aobj('v.int_ , 'h.boolean)(obj('v -> 2,            'h -> true)))
+      aobj('v.int_ , 'h.boolean)(obj(                    'h -> true)).transform ('v).using(_.increment).check(aobj('v.int_ , 'h.boolean)(obj(                    'h -> true)))      
+      aobj('v.ints , 'h.boolean)(obj('v -> Seq(1, 2, 3), 'h -> true)).transform ('v).using(_.increment).check(aobj('v.ints , 'h.boolean)(obj('v -> Seq(2, 3, 4), 'h -> true)))
+      aobj('v.ints_, 'h.boolean)(obj('v -> Seq(1, 2, 3), 'h -> true)).transform ('v).using(_.increment).check(aobj('v.ints_, 'h.boolean)(obj('v -> Seq(2, 3, 4), 'h -> true)))
+      aobj('v.ints_, 'h.boolean)(obj(                    'h -> true)).transform ('v).using(_.increment).check(aobj('v.ints_, 'h.boolean)(obj(                    'h -> true)))
+    
+        // only requiredness, not multiplicity
+        aobj('v.int_ , 'h.boolean)(obj('v -> 1,            'h -> true)).transform ('v).using(_.toString).check(aobj('v.string_ , 'h.boolean)(obj('v -> "1", 'h -> true)))
+        aobj('v.int_ , 'h.boolean)(obj(                    'h -> true)).transform ('v).using(_.toString).check(aobj('v.string_ , 'h.boolean)(obj(           'h -> true)))
+        aobj('v.ints , 'h.boolean)(obj('v -> Seq(1, 2, 3), 'h -> true)).transform ('v).using(_.toString).check(aobj('v.strings , 'h.boolean)(obj('v -> Seq("1", "2", "3"), 'h -> true)))
+        aobj('v.ints_, 'h.boolean)(obj('v -> Seq(1, 2, 3), 'h -> true)).transform ('v).using(_.toString).check(aobj('v.strings_, 'h.boolean)(obj('v -> Seq("1", "2", "3"), 'h -> true)))
+        aobj('v.ints_, 'h.boolean)(obj(                    'h -> true)).transform ('v).using(_.toString).check(aobj('v.strings_, 'h.boolean)(obj(                          'h -> true)))
+              
+        aobj('v.int_ , 'h.boolean)(obj('v -> 1,            'h -> true)).transform ('v).using(_ => "1").check(aobj('v.string_ , 'h.boolean)(obj('v -> "1", 'h -> true)))
+        aobj('v.int_ , 'h.boolean)(obj(                    'h -> true)).transform ('v).using(_ => "1").check(aobj('v.string_ , 'h.boolean)(obj(           'h -> true)))
+        aobj('v.ints , 'h.boolean)(obj('v -> Seq(1, 2, 3), 'h -> true)).transform ('v).using(_ => "1").check(aobj('v.strings , 'h.boolean)(obj('v -> Seq("1", "1", "1"), 'h -> true)))
+        aobj('v.ints_, 'h.boolean)(obj('v -> Seq(1, 2, 3), 'h -> true)).transform ('v).using(_ => "1").check(aobj('v.strings_, 'h.boolean)(obj('v -> Seq("1", "1", "1"), 'h -> true)))
+        aobj('v.ints_, 'h.boolean)(obj(                    'h -> true)).transform ('v).using(_ => "1").check(aobj('v.strings_, 'h.boolean)(obj(                          'h -> true)))
 
     // ---------------------------------------------------------------------------
     Default01.transform ('f)            .using(_ + "bar").check(bobj('f -> "foobar", 'g -> 1))
@@ -101,18 +132,11 @@ object WhateverTest extends gallia.testing.Suite {
     Default02.transform(_.strings('f)).using(x => x.size + 1).check(bobj('f -> 3, 'g -> 1))
 
     // ===========================================================================
+    Default01.generate('f2).from(_.string('f)).using(_ + "_2").check(bobj('f -> "foo", 'g -> 1, 'f2 -> "foo_2"))
 
-    Default01
-      .generate('f2)
-        .from('f) // whatever
-          .using(_ + "_2")
-        .check(bobj('f -> "foo", 'g -> 1, 'f2 -> "foo_2"))
-
-    Default01
-      .generate('g2)
-        .from('g)
-          .using(_ + 3)
-        .check(bobj('f -> "foo", 'g -> 1, 'g2 -> 4))
+    Default01.generate('f2).from('f)          .using(_ + "_2").check(bobj('f -> "foo", 'g -> 1, 'f2 -> "foo_2")) // uses  WV
+    Default01.generate('g2).from('g)          .using(_ + 3)   .check(bobj('f -> "foo", 'g -> 1, 'g2 -> 4))       // uses TWV[T] with T=Int
+    Default01.generate('g2).from('g)          .using(_ => 4)  .check(bobj('f -> "foo", 'g -> 1, 'g2 -> 4))       // uses     T  with T=Int (actually 4)
 
     // ===========================================================================
     // fuse

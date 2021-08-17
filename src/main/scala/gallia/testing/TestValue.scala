@@ -59,7 +59,7 @@ def __check[T](u: HeadEnd, value: T) : TestValue = __check(u, None, Some(value))
   def __metaError(end: gallia.heads.HeadEnd, markers: Seq[String]): TestValue =
     Try { end.runMetaOnly().either } match {
       case Failure(metaFailure)                                                                  => problem(s"210414113945:MetaFailure:${metaFailure.getMessage}")
-      case Success(Right(metaSuccess))                                                           => problem("210414114600:ShouldHaveSucceeded")
+      case Success(Right(metaSuccess))                                                           => problem("210414114600:ShouldNotHaveSucceeded")
       case Success(Left(metaErrorResult)) if (!metaErrorResult.containsAllErrorMarkers(markers)) => problem(s"210414114601:MissingErrorMarkers:${metaErrorResult.formatDefault}")
       case Success(Left(metaErrorResult))                                                        => Ok }
 
@@ -73,7 +73,7 @@ def __check[T](u: HeadEnd, value: T) : TestValue = __check(u, None, Some(value))
     // ---------------------------------------------------------------------------
     def ___dataError(plan: ActionPlan, markers: Seq[String]): TestValue =
       Try { plan.atomPlan.naiveRun() } match {
-        case util.Success(_)                                                             => problem("210414114600:ShouldHaveSucceeded")
+        case util.Success(_)                                                             => problem("210414114600:ShouldNotHaveSucceeded")
         case util.Failure(dataError) if (!markers.forall(dataError.getMessage.contains)) => problem(s"210414114601:MissingErrorMarkers:${dataError.getMessage}")
         case util.Failure(dataError)                                                     => Ok }
 

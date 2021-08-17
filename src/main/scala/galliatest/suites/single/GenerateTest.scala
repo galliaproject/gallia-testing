@@ -101,27 +101,13 @@ aobj(
 
 
     // ===========================================================================
-    Default01
-      .generate('f2)
-        .from(_.string('f))
-          .using(_.underscore)
-        .check(bobj('f -> "foo", 'g -> 1, 'f2 -> "foo_"))
+    Default01.generate('f2).from(_.string('f)).using(_.underscore)   .check(bobj('f -> "foo", 'g -> 1, 'f2 -> "foo_"))
 
-    Default01
-      .generate('f2)
-        .from('f)
-          .using(_.toString.underscore)
-        .check(bobj('f -> "foo", 'g -> 1, 'f2 -> "foo_"))
+    Default01.generate('f2).from('f)          .using(_ + "_2")       .check(bobj('f -> "foo", 'g -> 1, 'f2 -> "foo_2")) // uses  WV
+    Default01.generate('f2).from('f)          .using(_.sizeString)   .check(bobj('f -> "foo", 'g -> 1, 'f2 -> 3))       // uses TWV[T] with T=Int        
+    Default01.generate('f2).from('f)          .using(_.toString.size).check(bobj('f -> "foo", 'g -> 1, 'f2 -> 3))       // uses     T  with T=Int
 
-    Default01
-      .generate('f2)
-        .from(
-            _.string('f),
-            _.int   ('g))
-          .using { (f, g) =>
-            f.underscore(g.str) }
-        .check(bobj('f -> "foo", 'g -> 1, 'f2 -> "foo_1"))
-
+    // ---------------------------------------------------------------------------
     // disallowed
     //    Default01
     //      .generate('f2)
@@ -131,19 +117,33 @@ aobj(
     //          .using { (f, g) =>
     //            f.toString.underscore(g.toString) }
     //        .check(bobj('f -> "foo", 'g -> 1, 'f2 -> "foo_1"))
-
+    
     Default01
       .generate('f2)
-        .from('f, 'g)
+        .from(
+            _.string('f),
+            _.int   ('g))
           .using { (f, g) =>
-            f.toString.underscore(g.toString) }
+            f.underscore(g.str) }
         .check(bobj('f -> "foo", 'g -> 1, 'f2 -> "foo_1"))
 
+    // these all use WV
+    bobj('f -> "foo", 'g -> "bar").generate('f2).from('f, 'g).using { (f, g) => f + "_" + g }.check(bobj('f -> "foo", 'g -> "bar", 'f2 -> "foo_bar"))
+    bobj('f -> 2,     'g -> 3)    .generate('f2).from('f, 'g).using { (f, g) => f * g }      .check(bobj('f -> 2,     'g -> 3,     'f2 -> 6))        
+    bobj('f -> 2,     'g -> 3.5)  .generate('f2).from('f, 'g).using { (f, g) => f * g }      .dataError[RuntimeError.DifferingRuntimeType] // see 210811110423@design
+    bobj('f -> 2,     'g -> 3.4)  .generate('f2).from('f, 'g).using { (f, g) => f * g }      .dataError[RuntimeError.DifferingRuntimeType] // see 210811110423@design
+    bobj('f -> 3.4,   'g -> 2)    .generate('f2).from('f, 'g).using { (f, g) => f * g }      .check(bobj('f -> 3.4,   'g -> 2,     'f2 -> 6.8))
+
+    Default01.generate('f2).from('f, 'g).using { (f, g) => f.sizeString    * g }.check(bobj('f -> "foo", 'g -> 1, 'f2 -> 3)) // uses TWV[T] with T=Int    
+    Default01.generate('f2).from('f, 'g).using { (f, g) => f.toString.size * g }.check(bobj('f -> "foo", 'g -> 1, 'f2 -> 3)) // uses     T  with T=Int
+  //Default01.generate('f2).from('f, 'g).using { (f, g) => f.toString.size + g }.check(bobj('f -> "foo", 'g -> 1, 'f2 -> 4)) // can't because scala allows: 3 + "foo" (bad?)   
+    
+    // ===========================================================================
     Default01
       .generate('f1, 'f2)
         .from(_.string('f))
           .using { s => (
-              s.head.str,
+              s.head.toString,
               s.tail) }
         .check(bobj('f -> "foo", 'g -> 1, 'f1 -> "f", 'f2 -> "oo"))
 
@@ -151,7 +151,7 @@ aobj(
       .generate('f1, 'f2)
         .from(_.string('f))
           .using { s => (
-              s.headOption.map(_.str),
+              s.headOption.map(_.toString),
               s.tail) }
         .check(
             bobj('f -> "foo", 'g -> 1, 'f1 -> "f" , 'f2 -> "oo")
@@ -392,6 +392,32 @@ aobj(
         .from('a, 'b)
           .using { (a, b) => a * b }
       .check(bobj('a -> 2, 'b -> 3, 'ab -> 6))
+      
+    // ---------------------------------------------------------------------------     
+    bobj('a -> 2, 'b -> 3, 'c -> 4)
+      .generate('abc)
+        .from('a, 'b, 'c)
+          .using { (a, b, c) => a * b * c }
+      .check(bobj('a -> 2, 'b -> 3, 'c -> 4, 'abc -> 24))
+      
+    // ---------------------------------------------------------------------------
+    bobj('a -> 3.1, 'b -> 2) // ok because double comes first (see 210817130604)
+        .generate('ab)
+          .from('a, 'b)
+            .using { (a, b) => a * b }
+        .check(bobj('a -> 3.1, 'b -> 2, 'ab -> 6.2))
+        
+      bobj('a -> 2, 'b -> 3.1) // not so
+        .generate('ab)
+          .from('a, 'b)
+            .using { (a, b) => a * b }
+        .dataError[RuntimeError.DifferingRuntimeType]      
+  
+      bobj('a -> 3.1, 'b -> 2)
+        .generate('ab)
+          .from('a, 'b)
+            .using { (a, _) => a * 2 }
+        .check(bobj('a -> 3.1, 'b -> 2, 'ab -> 6.2))      
   }
 
 }

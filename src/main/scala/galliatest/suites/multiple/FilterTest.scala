@@ -12,6 +12,7 @@ import TestDataS._
   //Default52.filterBy(_.string('f))           .hasValue    ("foo2")               .force.one.check(Default01b)
     Default52.filterBy(         'f )           .matches(_ == "foo2")               .force.one.check(Default01b)
     Default52.filterBy(         'f )           .hasValue    ("foo2")               .force.one.check(Default01b)
+    Default52.filterBy(         'f )           .in(Seq("foo1", "foo2"))            .force.one.check(Default01b) // like a SQL IN    
     Default52.filterBy(_.string('f), _.int('g)).matches((f, g) => (f.size + g) > 4).force.one.check(Default01b)
 
     Default52.filterUnsafe { o => (o.string('f).size + o.int('g)) > 4 }            .force.one.check(Default01b)

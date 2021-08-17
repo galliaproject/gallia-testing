@@ -17,7 +17,9 @@ import TestDataO._
       Default01.forEachPath(_.explicit('p1 |> 'f, 'p2 |> 'g/* ~> 'G*/)).zen(_.removeIfValueFor(_).is("foo"))
     }
 
+    Default01.removeIfValueFor('f)                  .is     ("foo")            .check(tmp201224) // whatever    
     Default01.removeIfValueFor(_.firstKey          ).is     ("foo")            .check(tmp201224) // whatever
+    
     Default01.removeIfValueFor(_.string('f)        ).matches(_.startsWith("f")).check(tmp201224)
     Default01.removeIfValueFor(_.string('f)        ).matches(_.startsWith("f")).check(tmp201224)
     Default01.removeIfValueFor(_.string(_.firstKey)).matches(_.startsWith("f")).check(tmp201224)
