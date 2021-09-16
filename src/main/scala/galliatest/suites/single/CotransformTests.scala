@@ -4,7 +4,7 @@ import aptus.String_ // for .underscore
 import gallia._
 
 // ===========================================================================
-object CotransformTest extends gallia.testing.Suite {
+object CotransformTest extends gallia.testing.Suite { // TODO: t210826102833 - rework co-transforms
 	import TestDataO.{Default01, Default15m, Default15p}
 
 	// ---------------------------------------------------------------------------

@@ -18,7 +18,8 @@ object AllTests extends App {
 
     single.NestingRelatedTest,
     single.TransformTest,
-    single.FuseFissionTest,
+    single.FissionTest,
+    single.FuseTest,
     single.GenerateTest,
     single.CotransformTest,
     

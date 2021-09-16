@@ -1,6 +1,7 @@
 package galliatest.suites.single
 
 import gallia._
+import gallia.vldt._Error.{Runtime => RuntimeError}
 
 // ===========================================================================
 object WhateverTest extends gallia.testing.Suite {
@@ -38,6 +39,7 @@ object WhateverTest extends gallia.testing.Suite {
     bobj('v -> 2.0)  .transform('v).using(_.square)      .check(bobj('v -> 4.0))
     bobj('v -> 1  )  .transform('v).using(_.increment)   .check(bobj('v -> 2))
     bobj('v -> true) .transform('v).using(_.flip)        .check(bobj('v -> false))
+    bobj('v -> true) .transform('v).using(!_)            .check(bobj('v -> false))
     bobj('v -> "foo").transform('v).using(_.toUpperCase) .check(bobj('v -> "FOO"))
     bobj('v -> "foo").transform('v).using(s => s"|${s}|").check(bobj('v -> "|foo|"))
 
@@ -56,6 +58,11 @@ object WhateverTest extends gallia.testing.Suite {
 
     bobj('f -> 2, 'g -> 3).fuse('f, 'g).as('fg).using((a, b) => (a + b)    .square).check(bobj('fg -> 25.0))
     bobj('f -> 2, 'g -> 3).fuse('f, 'g).as('fg).using((a, b) => (a + b + 1).square).check(bobj('fg -> 36.0))
+
+    bobj('f -> 2,   'g -> 3).fuse('f, 'g).as('fg).using((a, b) => b - a).check(bobj('fg -> 1))
+    bobj('f -> 2,   'g -> 3).fuse('f, 'g).as('fg).using((a, b) => b % a).check(bobj('fg -> 1))
+    bobj('f -> 2,   'g -> 3).fuse('f, 'g).as('fg).using((a, b) => b / a).check(bobj('fg -> 1)) // java does integer division in this case
+    bobj('f -> 2.0, 'g -> 3).fuse('f, 'g).as('fg).using((a, b) => b / a).check(bobj('fg -> 1.5))
 
     // explicit
     bobj('f -> 2, 'g -> 3).fuse(           'f,             'g ).as('fg).using((a, b) => a + b).check(bobj('fg -> 5))
@@ -141,13 +148,16 @@ object WhateverTest extends gallia.testing.Suite {
     // ===========================================================================
     // fuse
 
+    // non-Whatever:
     bobj('f -> "a,b,c", 'g -> "1,2,3")
         .fuse(_.string('f), _.string('g)).as('fg).using((f, g) => Seq(f, g))
       .check(bobj('fg -> Seq("a,b,c", "1,2,3")))
 
-    bobj('f -> "a,b,c", 'g -> "1,2,3")
-        .fuse('f, 'g).as('fg).using((f, g) => Seq(f, g))
-      .check(bobj('fg -> Seq("a,b,c", "1,2,3")))
+    // ---------------------------------------------------------------------------
+    // disallowed now
+    //bobj('f -> "a,b,c", 'g -> "1,2,3")
+    //    .fuse('f, 'g).as('fg).using((f, g) => Seq(f, g))
+    //  .check(bobj('fg -> Seq("a,b,c", "1,2,3")))
 
     bobj('f -> "a,b,c", 'g -> "1,2,3")
         .fuse('f, 'g).as('fg).using((f, g) => f + g)
@@ -157,16 +167,15 @@ object WhateverTest extends gallia.testing.Suite {
         .fuse('f, 'g).as('fg).using(_ + ":" + _)
       .check(bobj('fg -> "a,b,c:1,2,3"))
 
-    bobj('f -> "a,b,c", 'g -> "1,2,3")
-        .fuse('f, 'g).as('fg).using { (v1, v2) => Seq(v1 + ":" + v2, v1 + ";" + v2) }
-      .check(bobj('fg -> Seq("a,b,c:1,2,3", "a,b,c;1,2,3")))
-
-if (false)
-    aobj(cls('f.string_, 'g.string_))(obj('f -> "a,b,c", 'g -> "1,2,3"))
-        .fuse('f, 'g).as('fg).using { (v1, v2) => Seq(v1 + ":" + v2, v1 + ";" + v2) }
-      .check(bobj('fg -> Seq("a,b,c:1,2,3", "a,b,c;1,2,3")))
+    // disallowed now      
+    //bobj('f -> "a,b,c", 'g -> "1,2,3")
+    //    .fuse('f, 'g).as('fg).using { (v1, v2) => Seq(v1 + ":" + v2, v1 + ";" + v2) }
+    //  .check(bobj('fg -> Seq("a,b,c:1,2,3", "a,b,c;1,2,3")))
+    //
+    //aobj(cls('f.string_, 'g.string_))(obj('f -> "a,b,c", 'g -> "1,2,3"))
+    //    .fuse('f, 'g).as('fg).using { (v1, v2) => Seq(v1 + ":" + v2, v1 + ";" + v2) }
+    //  .check(bobj('fg -> Seq("a,b,c:1,2,3", "a,b,c;1,2,3")))      
   }
-
 
 }
 

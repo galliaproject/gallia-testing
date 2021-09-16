@@ -2,6 +2,7 @@ package galliatest.suites.single
 
 import gallia._
 import aptus._
+import gallia.vldt._Error.{Runtime => RuntimeError}
 
 // ===========================================================================
 object GenerateTest extends gallia.testing.Suite {
@@ -10,13 +11,6 @@ object GenerateTest extends gallia.testing.Suite {
   override def test() {
 import TestDataO._  
 import galliatest.TestMeta._
-
-    Default01
-      .generate('h)
-        .from(_.string('f))
-          .using { s => Foo(s, s.toUpperCase) }
-        .check(
-            bobj('f -> "foo", 'g -> 1, 'h -> bobj('a -> "foo", 'A -> "FOO")))
 
     // ===========================================================================
 //    val Default010 = aobjs(Default01, Default01b)

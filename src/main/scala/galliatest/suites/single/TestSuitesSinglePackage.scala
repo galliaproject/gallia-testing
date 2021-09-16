@@ -4,10 +4,7 @@ package galliatest.suites
 package object single {
   val TestMeta  = galliatest.TestMeta
   val TestDataO = galliatest.TestDataO
-  val TestDataS = galliatest.TestDataS
-  
-  // ---------------------------------------------------------------------------
-  val RuntimeError = gallia.vldt._Error.Runtime
+  val TestDataS = galliatest.TestDataS  
 }
 
 // ===========================================================================
