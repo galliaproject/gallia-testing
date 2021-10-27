@@ -65,7 +65,7 @@ case class TestResults(values: Seq[TestResult]) {
 
       // ---------------------------------------------------------------------------
       if (results.problem) {
-        gallia.illegalState("Houston, we have a problem.") }
+        throw new IllegalStateException("Houston, we have a problem.") }
     }
 
   }

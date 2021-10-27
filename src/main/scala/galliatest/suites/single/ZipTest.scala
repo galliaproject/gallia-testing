@@ -1,7 +1,7 @@
-package galliatest.suites.single
+package galliatest
+package suites.single
 
 import gallia._
-import scala.util.chaining._
 
 // ===========================================================================
 object ZipTest extends gallia.testing.Suite {

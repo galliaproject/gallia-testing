@@ -1,6 +1,6 @@
-package galliatest.suites.single
+package galliatest
+package suites.single
 
-import scala.util.chaining._
 import gallia._
 import gallia.vldt.ErrorId
 

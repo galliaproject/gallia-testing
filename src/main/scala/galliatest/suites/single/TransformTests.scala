@@ -29,11 +29,11 @@ import vldt.ErrorId._
     Default01   .transform(_.string ('f)).using { _      .toUpperCase  }.check(bobj('f -> "FOO", 'g -> 1))
     Default02   .transform(_.strings('f)).using { _.map(_.toUpperCase) }.check(bobj('f -> Seq("FOO1", "FOO2"), 'g -> 1))
 
-    Default01   .transform(_.string ('f)).using { _.as.noneIf(_.startsWith("z")).map(_.toUpperCase)  }.check(
+    Default01   .transform(_.string ('f)).using { _.in.noneIf(_.startsWith("z")).map(_.toUpperCase)  }.check(
         aobj(
             cls('f.string_ , 'g.int))(
             obj('f -> "FOO", 'g -> 1) ))
-    Default01   .transform(_.string ('f)).using { _.as.noneIf(_.startsWith("f")).map(_.toUpperCase)  }.check(
+    Default01   .transform(_.string ('f)).using { _.in.noneIf(_.startsWith("f")).map(_.toUpperCase)  }.check(
         aobj(
             cls('f.string_ , 'g.int))(
             obj(             'g -> 1) ))
@@ -46,7 +46,7 @@ import vldt.ErrorId._
     Default01.transform(_.string('f)).using(_.map(_.str))                    .check(bobj('f -> Seq("f", "o", "o"), 'g -> 1))
     Default01.transform(_.string('f)).using(s => Seq(s.head.str, s.last.str)).check(bobj('f -> Seq("f",      "o"), 'g -> 1))
 
-    Default01.transform(_.string('f)).using(_.as.noneIf(_ => true)).check(aobj(
+    Default01.transform(_.string('f)).using(_.in.noneIf(_ => true)).check(aobj(
       cls('f.string_ , 'g.int))(
       obj(             'g -> 1)        ))
 
