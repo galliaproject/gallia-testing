@@ -24,10 +24,21 @@ object NestingRelatedTest extends gallia.testing.Suite {
 
     Default03.nest('z).into('p).check(bobj('p -> bobj('f -> "foo", 'g -> 1, 'z -> true)))
 
+    // ---------------------------------------------------------------------------
+    Default06.nest('f1     )         .under('F).check(bobj('f2 -> "foo", 'g -> 1, 'F -> bobj('f1 -> "foo")))
+    Default06.nest(_.firstKey)       .under('F).check(bobj('f2 -> "foo", 'g -> 1, 'F -> bobj('f1 -> "foo")))
+    Default06.nest(_.allBut('f2, 'g)).under('F).check(bobj('f2 -> "foo", 'g -> 1, 'F -> bobj('f1 -> "foo")))
+    
+    Default06.nest('f1     )         .under('F).check(bobj('f2 -> "foo", 'g -> 1, 'F -> bobj('f1 -> "foo")))
+
+    Default03.nest('z).into('p ~> 'P).check(bobj('P -> bobj('f -> "foo" , 'g -> 1, 'z -> true)))
+
    // ===========================================================================
    // unnest
 
-    Default03.unnestFrom('p).field('f).check(bobj('p -> bobj('g -> 1), 'z -> true, 'f -> "foo"))
+    Default03.unnestFrom('p).field('f)      .check(bobj('p -> bobj('g -> 1), 'z -> true, 'f -> "foo"))
+    Default03.unnestFrom('p).field('f ~> 'F).check(bobj('p -> bobj('g -> 1), 'z -> true, 'F -> "foo"))    
+
     Default03.unnestAllFrom('p)       .check(bobj('z -> true, 'f -> "foo", 'g -> 1))
 
     Default01.unnestFrom('f).field('g).metaError("210109145953" -> "")

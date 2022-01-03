@@ -32,7 +32,7 @@ object AssertTest extends gallia.testing.Suite {
 
     in.assertIsString('g).metaError[_Error.ContaineeAssertionFailure]
 
-    in.noop(_.assertField('g).matches(_.isNumerical))
+    in.noop(_.assertField('g).matches(_.isNumericalType))
   }
 
   // ===========================================================================

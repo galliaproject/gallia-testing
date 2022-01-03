@@ -16,6 +16,8 @@ object AllTests extends App {
     
     single.AssertTest,
 
+    single.CommonTransformationsTest,
+    
     single.NestingRelatedTest,
     single.TransformTest,
     single.FissionTest,
@@ -32,7 +34,9 @@ object AllTests extends App {
     single.SquashingTest,
     single.WhateverTest,
     single.UncommonTypesTest,
-single.UnpivotTest,    
+
+    single.UnpivotTest,
+    
     // ---------------------------------------------------------------------------
     multiple.FilterTest,
     multiple.FlattenByTest,
@@ -46,7 +50,8 @@ single.UnpivotTest,
     
     // ---------------------------------------------------------------------------
     SchemaInferrerTest,
-    )
+    IoTest,
+  )
 
 }
 

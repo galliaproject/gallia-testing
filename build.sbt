@@ -16,7 +16,7 @@ lazy val root = (project in file("."))
   .settings(GalliaCommonSettings.mainSettings:_*)
 
 // ===========================================================================    
-lazy val galliaVersion = "0.3.0"
+lazy val galliaVersion = "0.3.2"
 
 // ---------------------------------------------------------------------------
 libraryDependencies += "io.github.galliaproject" %% "gallia-core" % galliaVersion

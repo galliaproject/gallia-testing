@@ -111,6 +111,19 @@ Default02b.toSum ('f ~> 'F).check(bobj('F -> 6  , 'g -> 1)) // f is ints
       AA.sumEach  ('g1, 'g2)  .by('f).check(aaa1)
       AA.countEach('g1, 'g2)  .by('f).check(aaa2)
       AA.aggregateEach('g1, 'g2).wit(_.sum).by('f).check(aaa1)
+      
+    // ===========================================================================
+    bobjs(
+        bobj('f -> "foo" , 'g1 -> 1, 'g2 -> 1.1),
+        bobj('f -> "foo" , 'g1 -> 2, 'g2 -> 2.5),
+        bobj('f -> "bar" , 'g1 -> 3, 'g2 -> 5.6))
+      .aggregate(
+            "g1".count_all,
+            "g2".mean)
+          .by("f")
+        .check(bobjs(
+            bobj('f -> "foo" , _group -> bobj('g1 -> 2, 'g2 -> 1.8)),
+            bobj('f -> "bar" , _group -> bobj('g1 -> 1, 'g2 -> 5.6))) )            
   }
 
 }

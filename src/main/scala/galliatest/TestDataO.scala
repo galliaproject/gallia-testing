@@ -29,7 +29,7 @@ object TestDataO {
 
     // ---------------------------------------------------------------------------
     val Default03p = aobj(
-      cls('p   .cls_('f.string, 'g.int   ), 'z.boolean))(
+      cls('p   .cls_('f.string  , 'g.int ), 'z.boolean))(
       obj('p -> obj ('f -> "foo", 'g -> 1), 'z -> true) )
 
     val Default03m = aobj(
@@ -42,6 +42,7 @@ object TestDataO {
     val Default04p = aobj(
       cls('p   .clss_  ('f.string,   'g.int),                                'z.boolean))(
       obj('p -> Seq(obj('f -> "foo", 'g -> 1), obj('f -> "foo2", 'g -> 2)) , 'z -> true) )
+
     val Default04m = aobj(
       cls('p   .clss_('f.string, 'g.int   ), 'z.boolean))(
       obj(                                   'z -> true) )
@@ -65,7 +66,7 @@ object TestDataO {
   val Default14p  = aobj(cls('f.strings_, 'g.int))(obj('f -> Seq("foo1", "foo2"), 'g -> 1))
   val Default14m  = aobj(cls('f.strings_, 'g.int))(obj(                           'g -> 1))
 
-val Default13p2 = aobj(cls('f.string_, 'g.int))(obj('f -> "bar", 'g -> 2))
+val Default13p2 = aobj(cls('f.string_ , 'g.int))(obj('f -> "bar", 'g -> 2))
 val Default14p2 = aobj(cls('f.strings_, 'g.int))(obj('f -> Seq("bar1", "bar2"), 'g -> 2))
   
   // ===========================================================================

@@ -5,10 +5,21 @@ import gallia.vldt.ErrorId ._
 
 // ===========================================================================
 object VeryBasicsTest extends gallia.testing.Suite {
-  import TestDataO.{Default00, Default01, Default03, Default06, Default09}
+  import TestDataO.{Default00, Default01, Default03, Default06, Default06a, Default09}
 
   // ===========================================================================
   override def test() {
+    
+    // ===========================================================================
+    // reordering keys
+
+    Default06a.reorderAsFirstKey ('g)     .check(bobj('g -> 1, 'f1 -> "foo1" , 'f2 -> "foo2"))
+    Default06a.reorderAsFirstKeys('g, 'f2).check(bobj('g -> 1,                 'f2 -> "foo2" , 'f1 -> "foo1"))
+
+    Default06a.reorderAsLastKey ('f1)     .check(bobj( 'f2 -> "foo2", 'g -> 1, 'f1 -> "foo1"))
+    Default06a.reorderAsLastKeys('f2, 'f1).check(bobj(                'g -> 1, 'f1 -> "foo1", 'f2 -> "foo2"))
+
+    // ===========================================================================
     testRename1(
         in  = Default01)(
         out = bobj('F -> "foo", 'g -> 1))
