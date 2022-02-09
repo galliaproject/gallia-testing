@@ -50,6 +50,7 @@ object AllTests extends App {
     
     // ---------------------------------------------------------------------------
     SchemaInferrerTest,
+    GraphTest,
     IoTest,
   )
 
