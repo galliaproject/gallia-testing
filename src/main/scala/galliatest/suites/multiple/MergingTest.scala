@@ -24,6 +24,9 @@ object MergingTest extends gallia.testing.Suite {
           obj('f -> "f1" , _left -> Seq(obj('g -> "a"))                 , _right -> Seq(obj('G -> "a"))),
           obj('f -> "f2" , _left -> Seq(obj('g -> "b"), obj('g -> "a"))),
           obj('f -> "f2b",                                                _right -> Seq(obj('G -> "b")))) )
+
+    // ---------------------------------------------------------------------------
+    bobj('f -> "foo", 'g -> 1).convertToMultiple.innerJoin(bobj('f -> "foo").convertToMultiple).check(bobjs(bobj('f -> "foo", 'g -> 1)))     
   }
 
   // ===========================================================================
