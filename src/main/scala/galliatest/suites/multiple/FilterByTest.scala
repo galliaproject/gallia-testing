@@ -1,13 +1,25 @@
 package galliatest.suites.multiple
 
 import gallia._
+import scala.util.chaining._
 
 // ===========================================================================
-object FilterTest extends gallia.testing.Suite {
-import TestDataO._
-import TestDataS._
+object FilterByTest extends gallia.testing.Suite {
+  import TestDataO._
+  import TestDataS._
 
+  // ---------------------------------------------------------------------------
   override def test() {
+
+Default52.take    (1).display()
+Default52.takeLeft(1).display()
+Default52.drop    (1).display()
+Default52.dropLeft(1).display()
+
+//Default52.findBy()drop    (1).display()
+
+???
+
     Default52.filterBy(_.string('f))           .matches(_ == "foo2")               .force.one.check(Default01b)
   //Default52.filterBy(_.string('f))           .hasValue    ("foo2")               .force.one.check(Default01b)
     Default52.filterBy(         'f )           .matches(_ == "foo2")               .force.one.check(Default01b)
@@ -35,7 +47,32 @@ import TestDataS._
     Default57.filterBy(_.string_('f)).matches(_.isDefined).check(aobjs(Default13p, Default13p2, Default13p))
   //Default57.filterBy(_.any_('f))   .matches(_.isDefined) // TODO: allow?
     Default57.filterBy('f).isPresent                      .check(aobjs(Default13p, Default13p2, Default13p))
-    Default57.filterBy('f).hasSize(1)                     .check(aobjs(Default13p, Default13p2, Default13p))
+    Default57.filterBy('f).hasSize(1)                     .check(aobjs(Default13p, Default13p2, Default13p))    
+    Default57.filterBy('f).hasValue(     "foo")           .check(aobjs(Default13p,              Default13p))
+    Default57.filterBy('f).matches (_ == "foo")           .check(aobjs(Default13p,              Default13p))
+    Default59.filterBy('f).hasValue(Seq( "foo1", "foo2")) .check(aobjs(Default14p,              Default14p))    
+
+    // ---------------------------------------------------------------------------
+    Default52.filterBy('f, 'g).matches { (f, g) => f == "foo" && g == 1 }.check(bobjs(Default01,  Default01))    
+    Default57.filterBy('f, 'g).matches { (f, g) => f == "foo" && g == 1 }.check(aobjs(Default13p, Default13p))
+    Default52.filterBy('f, 'g).hasValues("foo", 1).check(bobjs(Default01,  Default01))
+    Default57.filterBy('f, 'g).hasValues("foo", 1).check(aobjs(Default13p, Default13p))
+    
+    Default52.filterBy('f, 'g).notValues("foo2", 2).check(bobjs(Default01,  Default01))
+    Default57.filterBy('f, 'g).notValues("foo2", 2).check(aobjs(Default13p, Default13p))
+    
+    // ---------------------------------------------------------------------------
+    Default57.filterBy('g).matches (_ == 1)           .check(aobjs(Default13p, Default13m, Default13p))
+
+    // ---------------------------------------------------------------------------
+    aobjs(
+          aobj(cls('f.int_, 'g.int))(obj('f -> 3, 'g -> 1)),
+          aobj(cls('f.int_, 'g.int))(obj('f -> 3, 'g -> 2)),          
+          aobj(cls('f.int_, 'g.int))(obj('f -> 3, 'g -> 1)) )
+        .pipe { expected =>
+        Default57b.filterBy('f).matches (_ == 3).check(expected)         
+        Default57b.filterBy('f).matches (_ >= 3).check(expected)
+      }
   }
 
 }
