@@ -6,7 +6,7 @@ lazy val root = (project in file("."))
     organizationName     := "Gallia Project",
     organization         := "io.github.galliaproject", // *must* match groupId for sonatype
     name                 := "gallia-testing",
-    version              := "0.3.0",    
+    version              := GalliaCommonSettings.CurrentGalliaVersion,
     homepage             := Some(url("https://github.com/galliaproject/gallia-testing")),
     scmInfo              := Some(ScmInfo(
         browseUrl  = url("https://github.com/galliaproject/gallia-testing"),
@@ -15,18 +15,16 @@ lazy val root = (project in file("."))
     description          := "A Scala library for data manipulation" )
   .settings(GalliaCommonSettings.mainSettings:_*)
 
-// ===========================================================================    
-lazy val galliaVersion = "0.3.2"
-
-// ---------------------------------------------------------------------------
-libraryDependencies += "io.github.galliaproject" %% "gallia-core" % galliaVersion
+// ===========================================================================
+libraryDependencies += "io.github.galliaproject" %% "gallia-core" % GalliaCommonSettings.CurrentGalliaVersion
 
 // ---------------------------------------------------------------------------
 // TODO: t210114171154, use existing testing library (or implement sbt-testing interfaces?)
+libraryDependencies += "org.yaml" % "snakeyaml" % "1.30"
 
 // ===========================================================================
 sonatypeRepository     := "https://s01.oss.sonatype.org/service/local"
-sonatypeCredentialHost :=         "s01.oss.sonatype.org"        
+sonatypeCredentialHost :=         "s01.oss.sonatype.org"
 publishMavenStyle      := true
 publishTo              := sonatypePublishToBundle.value
 
