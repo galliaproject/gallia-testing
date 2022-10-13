@@ -1,7 +1,7 @@
 package gallia.testing
 
 import aptus._
-import gallia.CallSite
+import scala.util.chaining._
 
 // ===========================================================================
 case class TestResults(values: Seq[TestResult]) {
@@ -9,9 +9,9 @@ case class TestResults(values: Seq[TestResult]) {
     
     def isMultipleSuites: Boolean = suiteNames.size > 1
     
-    def counts: (Int, Int) = values.partition(_.value.isOk).thn { case (oks, kos) => (oks.size, kos.size) }
+    def counts: (Int, Int) = values.partition(_.value.isOk).pipe { case (oks, kos) => (oks.size, kos.size) }
     
-    def problem: Boolean = counts.thn { case (oks, kos) => (oks == 0 || kos > 0) }
+    def problem: Boolean = counts.pipe { case (oks, kos) => (oks == 0 || kos > 0) }
     
     // ---------------------------------------------------------------------------
     def groupedBySuiteName[T](f: (String, TestResults) => T): Seq[T] =

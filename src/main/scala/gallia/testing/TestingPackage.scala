@@ -1,8 +1,5 @@
 package gallia
 
-import aptus._
-import util.Try
-
 // ===========================================================================
 package object testing {
   type HeadEnd    = gallia.heads.HeadEnd
@@ -31,11 +28,11 @@ package object testing {
     def resetStdErr() { System.setErr(OriginalErr) }
     
   // ===========================================================================
-  private[testing] def _toNonRequired(value: AObj, keys: Seq[KeyW]): AObj =
+  private[testing] def _toOptional(value: AObj, keys: Seq[KeyW]): AObj =
     value
       .copy(c = keys
       .map(_.value)
-      .foldLeft(value.c)(_ toNonRequired _))
+      .foldLeft(value.c)(_ toOptional _))
 
 }
 
