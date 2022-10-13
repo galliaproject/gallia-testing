@@ -1,6 +1,7 @@
-package galliatest.suites
+package galliatest
+package suites
 
-import aptus.Anything_ // for .thn/.assert
+import aptus.Anything_ // for .assert
 import gallia._
 
 // ===========================================================================
@@ -22,7 +23,7 @@ object SchemaInferrerTest extends gallia.testing.Suite {
     // ---------------------------------------------------------------------------
     QuickTestData
       .streamObjs().toListAndTrash
-      .thn(klass)
+      .pipe(klass)
       .assert(_ == cls(
         'first_name        .string,
         'last_name         .string,
@@ -54,7 +55,7 @@ object SchemaInferrerTest extends gallia.testing.Suite {
           {"f": "foo3", "g": 3}
         """
         .streamObjs().toListAndTrash
-        .thn(klass)
+        .pipe(klass)
         .assert(_ == cls('f.string, 'g.int))
 
     // ---------------------------------------------------------------------------
@@ -65,7 +66,7 @@ object SchemaInferrerTest extends gallia.testing.Suite {
          {"f": "foo4", "g": 4}
         """
         .streamObjs().toListAndTrash
-        .thn(klass)
+        .pipe(klass)
         .assert(_ == cls('f.string, 'g.double))
 
     // ---------------------------------------------------------------------------
@@ -76,7 +77,7 @@ object SchemaInferrerTest extends gallia.testing.Suite {
          {"f": "foo4", "g": 4}
        """
         .streamObjs().toListAndTrash
-        .thn(klass)
+        .pipe(klass)
         .assert(_ == cls('f.string, 'g.double))
   }
 

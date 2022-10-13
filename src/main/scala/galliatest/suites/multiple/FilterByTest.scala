@@ -10,16 +10,20 @@ object FilterByTest extends gallia.testing.Suite {
 
   // ---------------------------------------------------------------------------
   override def test() {
+    Default52.take    (1).check(bobjs(Default01))
+    Default52.takeLeft(1).check(bobjs(Default01))
 
-Default52.take    (1).display()
-Default52.takeLeft(1).display()
-Default52.drop    (1).display()
-Default52.dropLeft(1).display()
+    Default52.drop    (1).check(bobjs(           Default01, Default01b))
+    Default52.dropLeft(1).check(bobjs(           Default01, Default01b))
 
-//Default52.findBy()drop    (1).display()
+    Default52.takeWhile(_.string('f).mapV(_.size < 4)).check(bobjs(Default01, Default01))
+    Default52.dropWhile(_.string('f).mapV(_.size < 4)).check(bobjs(                      Default01b))
 
-???
+Default52.toViewBased    .take    (1).check(bobjs(Default01))
+Default52.toIteratorBased.take    (1).display()
+Default52.toIteratorBased.take    (1).check(bobjs(Default01))
 
+    // ---------------------------------------------------------------------------
     Default52.filterBy(_.string('f))           .matches(_ == "foo2")               .force.one.check(Default01b)
   //Default52.filterBy(_.string('f))           .hasValue    ("foo2")               .force.one.check(Default01b)
     Default52.filterBy(         'f )           .matches(_ == "foo2")               .force.one.check(Default01b)
@@ -29,8 +33,10 @@ Default52.dropLeft(1).display()
 
     Default52.filterUnsafe { o => (o.string('f).size + o.int('g)) > 4 }            .force.one.check(Default01b)
 
-    res0.filterBy(_.obj ('p)).matches(_.squash(_.string('f), _.int('g)).using(                (f, g) => (f.size + g) > 4  )).force.one.check(bobj('z -> false, 'p ->     Default01b ))
-    res1.filterBy(_.objz('p)).matches(_.squash(_.string('f), _.int('g)).using(_.forall { case (f, g) => (f.size + g) > 4 })).force.one.check(bobj('z -> false, 'p -> Seq(Default01b)))
+    res0.filterBy(_.entity  ('p)).matches(_.squash(_.string('f), _.int('g)).using(                (f, g) => (f.size + g) >  4  )).force.one.check(bobj('z -> false, 'p ->     Default01b ))
+    res1.filterBy(_.entities('p)).matches(_.squash(_.string('f), _.int('g)).using(_.forall { case (f, g) => (f.size + g) >  4 })).force.one.check(bobj('z -> false, 'p -> Seq(Default01b)))
+    Default52              .takeWhile(_.squash(_.string('f), _.int('g)).using(                (f, g) => (f.size + g) <= 4  )).check(bobjs(Default01, Default01))
+    Default52              .dropWhile(_.squash(_.string('f), _.int('g)).using(                (f, g) => (f.size + g) <= 4  )).check(bobjs(Default01b))
 
     // ---------------------------------------------------------------------------
   //Default52.filterBy(_.string('f)).hasValue("foo").check(bobjs(Default01, Default01))
@@ -47,7 +53,7 @@ Default52.dropLeft(1).display()
     Default57.filterBy(_.string_('f)).matches(_.isDefined).check(aobjs(Default13p, Default13p2, Default13p))
   //Default57.filterBy(_.any_('f))   .matches(_.isDefined) // TODO: allow?
     Default57.filterBy('f).isPresent                      .check(aobjs(Default13p, Default13p2, Default13p))
-    Default57.filterBy('f).hasSize(1)                     .check(aobjs(Default13p, Default13p2, Default13p))    
+  //Default57.filterBy('f).hasSize(1)                     .check(aobjs(Default13p, Default13p2, Default13p))
     Default57.filterBy('f).hasValue(     "foo")           .check(aobjs(Default13p,              Default13p))
     Default57.filterBy('f).matches (_ == "foo")           .check(aobjs(Default13p,              Default13p))
     Default59.filterBy('f).hasValue(Seq( "foo1", "foo2")) .check(aobjs(Default14p,              Default14p))    
@@ -73,6 +79,11 @@ Default52.dropLeft(1).display()
         Default57b.filterBy('f).matches (_ == 3).check(expected)         
         Default57b.filterBy('f).matches (_ >= 3).check(expected)
       }
+
+    // ===========================================================================
+    bobjs(bobj(_line -> "foo"), bobj(_line -> ""), bobj(_line -> "bar"))
+        .filterOutEmptyLines
+      .check(bobjs(bobj(_line -> "foo"), bobj(_line -> "bar")))
   }
 
 }

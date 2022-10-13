@@ -48,8 +48,8 @@ object SomewhatBasicsTest extends gallia.testing.Suite {
       bobj('f -> "foo", 'gg -> 1).rename(_.tail.tail) metaError gallia.vldt.ErrorId.CouldNotRenameDynamically // "f - empty.tail"
 
     val in = bobj('f -> "foo", 'gg -> 1)
-      in.noop(_.forEachKey(_.customKeys(_.tail.tail)).zen((u, k) => u.rename(k ~> k.name.toUpperCase)))
-      in       .forEachKey(_.customKeys(_.tail     )).zen((u, k) => u.rename(k ~> k.name.toUpperCase)) check bobj('f -> "foo", 'GG -> 1)
+      in.noop(_.forEachKey(_.customKeys(_.tail.tail)).thn((u, k) => u.rename(k ~> k.name.toUpperCase)))
+      in       .forEachKey(_.customKeys(_.tail     )).thn((u, k) => u.rename(k ~> k.name.toUpperCase)) check bobj('f -> "foo", 'GG -> 1)
   }
 
   // ===========================================================================
@@ -105,9 +105,9 @@ object SomewhatBasicsTest extends gallia.testing.Suite {
 
   // ===========================================================================
   private def testSwap() {
-    Default01                             .swapEntries          ('f, "g" ) check            bobj('g -> "foo", 'f -> 1)
-    Default03.transform(_.obj('p)).using(_.swapEntries          ('f, "g")) check bobj('p -> bobj('g -> "foo", 'f -> 1), 'z -> true)
-    Default03                             .swapEntries('p ~> 'P)('f, "g" ) check bobj('P -> bobj('g -> "foo", 'f -> 1), 'z -> true)
+    Default01                                .swapEntries          ('f, "g" ) check            bobj('g -> "foo", 'f -> 1)
+    Default03.transform(_.entity('p)).using(_.swapEntries          ('f, "g")) check bobj('p -> bobj('g -> "foo", 'f -> 1), 'z -> true)
+    Default03                                .swapEntries('p ~> 'P)('f, "g" ) check bobj('P -> bobj('g -> "foo", 'f -> 1), 'z -> true)
 
     // ---------------------------------------------------------------------------
     bobj('f1 -> "foo1", 'f2 -> "foo2", 'g1 -> 1, 'g2 -> 2)

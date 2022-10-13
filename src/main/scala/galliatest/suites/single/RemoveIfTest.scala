@@ -14,7 +14,7 @@ import TestDataO._
   override def test() { //import TestDataO.{Default01, Default01c, Default03, Default04, Default06, Default10, Default11}
     if (false) { // compiles
       Default01.removeIfValueFor('p1 |> 'f, 'p2 |> 'g ~> 'G)
-      Default01.forEachPath(_.explicit('p1 |> 'f, 'p2 |> 'g/* ~> 'G*/)).zen(_.removeIfValueFor(_).is("foo"))
+      Default01.forEachPath(_.explicit('p1 |> 'f, 'p2 |> 'g/* ~> 'G*/)).thn(_.removeIfValueFor(_).is("foo"))
     }
 
     Default01.removeIfValueFor('f)                  .is     ("foo")            .check(tmp201224) // whatever    
@@ -170,6 +170,25 @@ if (false) { // FIXME: 210108095411
     Default14p.removeIfValueFor('f).is(Seq("FOO1", "foo2")).check(Default14p)
 
     Default01.removeIfValueFor(_.int('g)).matches(_ => true).check(aobj(cls('f.string, 'g.int_))(obj('f -> "foo"))) // via tautology
+
+    // ===========================================================================
+    val aa =                                bobj("f" -> "foo", "g" -> 1)
+    val bb = aobj(cls("f".string_, "g".int))(obj(              "g" -> 1))
+    val cc = aobj(cls("f".string_, "g".int))(obj("f" -> "foo", "g" -> 1))
+
+    aa.cotransform(_.string("f"), _.int("g")).using { (f, g) => if (g == 1) (None -> g) else Some(f) -> g }.check(bb)
+    aa.cotransform(_.string("f"), _.int("g")).using { (f, g) => if (g == 2) (None -> g) else Some(f) -> g }.check(cc)
+    aa.removeValueFor("f").ifValueFor(_.int("g")).is(1)                                                    .check(bb)
+    aa.removeValueFor("f").ifValueFor(_.int("g")).is(2)                                                    .check(cc)
+    aa.removeValueFor("f").ifValueFor(      "g" ).is(1)                                                    .check(bb)
+    aa.removeValueFor("f").ifValueFor(      "g" ).is(2)                                                    .check(cc)
+
+    bb.cotransform(_.string_("f"), _.int("g")).using { (f, g) => if (g == 1) Some("foo") -> g else f -> g }.check(cc)
+    cc.cotransform(_.string_("f"), _.int("g")).using { (f, g) => if (g == 2) Some("foo") -> g else f -> g }.check(cc)
+    bb.setDefaultConditionally("f").asValue("foo").ifValueFor(_.int("g")).is(1)                            .check(cc)
+    cc.setDefaultConditionally("f").asValue("foo").ifValueFor(_.int("g")).is(1)                            .check(cc)
+    bb.setDefaultConditionally("f").asValue("foo").ifValueFor(      "g" ).is(1)                            .check(cc)
+    cc.setDefaultConditionally("f").asValue("foo").ifValueFor(      "g" ).is(1)                            .check(cc)
   }
 
 }

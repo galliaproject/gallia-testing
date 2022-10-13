@@ -21,7 +21,7 @@ val aa = bobjs(
 //      def usingSum (implicit ev: O1 <:< Int   ): End = { using(_.map(_.asInstanceOf[Int]).sum); new End {} }
 //      def usingSum2(implicit ev: O1 <:< Double): End = ???// = { using((x: Seq[Double]) => x.sum); new End {} }
 
-     yyy.sum('g).by('f1).check(aa)
+     Default61.sum('g).by('f1).check(aa)
      //.agg(_.field(_.int('g)).by('f1).usingSuM2).check(aa)
 //val yyy  = bobjs(Default06a, Default06b, Default06a)
 //              val Default06a = bobj('f1 -> "foo1", 'f2 -> "foo2", 'g -> 1)

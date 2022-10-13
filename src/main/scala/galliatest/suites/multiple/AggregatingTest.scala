@@ -9,7 +9,59 @@ import TestDataS._
 
 
   // ===========================================================================
-  override def test() {  
+  override def test() {
+
+    // ---------------------------------------------------------------------------
+    // reduced to HeadV (value)
+
+    Default56.aggregateBy("g").as("f1s").using(_.strings("f1")).check(bobjs(
+      bobj("g" -> 1, "f1s" -> Seq("foo1", "foo1")),
+      bobj("g" -> 3, "f1s" -> Seq("foo3"))))
+
+    Default56.aggregateBy("g").using(_.strings("f1")).check(bobjs(
+      bobj("g" -> 1, _agg -> Seq("foo1", "foo1")),
+      bobj("g" -> 3, _agg -> Seq("foo3"))))
+
+    Default56.aggregateBy("g").using { x =>
+        x.strings("f1").mapV(_.reduceLeft(_ + _)) }
+      .check(bobjs(
+        bobj("g" -> 1, _agg -> "foo1foo1"),
+        bobj("g" -> 3, _agg -> "foo3")))
+
+    Default56.aggregateBy("g").using { x =>
+        x.strings("f1").mapV(_.reduceLeft(_ + _)) concatenate "bar" }
+      .check(bobjs(
+        bobj("g" -> 1, _agg -> "foo1foo1bar"),
+        bobj("g" -> 3, _agg -> "foo3bar")))
+
+    Default56.aggregateBy("g").using { x =>
+        x.strings("f1").mapV(_.reduceLeft(_ + _)) concatenate
+        x.strings("f2").mapV(_.reduceLeft(_ + _)) }
+      .check(bobjs(
+        bobj("g" -> 1, _agg -> "foo1foo1foo2foo2"),
+        bobj("g" -> 3, _agg -> "foo3foo4")))
+
+    // ---------------------------------------------------------------------------
+    // reduced to HeadO (object)
+
+    {
+      val expected = bobjs(
+        bobj("g" -> 1, "f1s" -> "foo1foo1", "f2s" -> "foo2foo2"),
+        bobj("g" -> 3, "f1s" -> "foo3"    , "f2s" -> "foo4"))
+
+      Default56.aggregateBy("g").using { x =>
+          gallia.headO( // explicitly
+            "f1s" -> x.strings("f1").concatenateStrings,
+            "f2s" -> x.strings("f2").concatenateStrings) }
+        .check(expected)
+
+      Default56.aggregateBy("g").using { x =>
+          ( "f1s" -> x.strings("f1").concatenateStrings,
+            "f2s" -> x.strings("f2").concatenateStrings) }
+        .check(expected)
+    }
+
+    // ===========================================================================
     assert(Default52.forceSize == 3) // f is z
 
       // ---------------------------------------------------------------------------
@@ -31,41 +83,41 @@ Default02b.toSum ('f ~> 'F).check(bobj('F -> 6  , 'g -> 1)) // f is ints
       Default02c.toStdev('f).maxDecimals('f, 2).check(bobj('f -> 0.9 , 'g -> 1)) // TODO...
 
     // ===========================================================================
-    Default52.countBy              ('f)           .check(bobjs(bobj('f -> "foo", _count -> 2), bobj('f -> "foo2", _count -> 1)))
-    Default52.countBy              ('f).asDefault .check(bobjs(bobj('f -> "foo", _count -> 2), bobj('f -> "foo2", _count -> 1)))
-    Default52.countBy              ('f).as('COUNT).check(bobjs(bobj('f -> "foo", 'COUNT -> 2), bobj('f -> "foo2", 'COUNT -> 1)))
-    Default52.count   ('g      ).by('f)           .check(bobjs(bobj('f -> "foo", 'g     -> 2), bobj('f -> "foo2", 'g     -> 1)))
-    Default52.count   ('g ~> 'G).by('f)           .check(bobjs(bobj('f -> "foo", 'G     -> 2), bobj('f -> "foo2", 'G     -> 1)))
+    Default52.countBy              ('f)           .check(bobjs(bobj('f -> "foo", _count_all -> 2), bobj('f -> "foo2", _count_all -> 1)))
+    Default52.countBy              ('f).asDefault .check(bobjs(bobj('f -> "foo", _count_all -> 2), bobj('f -> "foo2", _count_all -> 1)))
+    Default52.countBy              ('f).as('COUNT).check(bobjs(bobj('f -> "foo", 'COUNT     -> 2), bobj('f -> "foo2", 'COUNT -> 1)))
+    Default52.count   ('g      ).by('f)           .check(bobjs(bobj('f -> "foo", 'g         -> 2), bobj('f -> "foo2", 'g     -> 1)))
+    Default52.count   ('g ~> 'G).by('f)           .check(bobjs(bobj('f -> "foo", 'G         -> 2), bobj('f -> "foo2", 'G     -> 1)))
 
     // ---------------------------------------------------------------------------
-    Default56.countWith(_.count).by('g).check(bobjs(bobj('g -> 1, _count -> 2), bobj('g -> 3, _count -> 1)))
-    Default56.countBy              ('g).check(bobjs(bobj('g -> 1, _count -> 2), bobj('g -> 3, _count -> 1)))
+    Default56.countWith(_.count_all).by('g).check(bobjs(bobj('g -> 1, _count_all -> 2), bobj('g -> 3, _count_all -> 1)))
+    Default56.countBy                  ('g).check(bobjs(bobj('g -> 1, _count_all -> 2), bobj('g -> 3, _count_all -> 1)))
 
-      Default57.count    ('f).by('g)                         .check(bobjs(bobj('g -> 1, 'f     -> 3), bobj('g -> 2, 'f     -> 1)))
-      Default57.countBy                      ('g).as("COUNT").check(bobjs(bobj('g -> 1, 'COUNT -> 3), bobj('g -> 2, 'COUNT -> 1)))
-      Default57.countBy                      ('g)            .check(bobjs(bobj('g -> 1, _count -> 3), bobj('g -> 2, _count -> 1)))
-      Default57.countWith        (_.count).by('g)            .check(bobjs(bobj('g -> 1, _count -> 3), bobj('g -> 2, _count -> 1)))
-      Default57.aggregate('f).wit(_.count).by('g)            .check(bobjs(bobj('g -> 1, 'f     -> 3), bobj('g -> 2, 'f     -> 1)))
+      Default57.count    ('f).by('g)                             .check(bobjs(bobj('g -> 1, 'f         -> 3), bobj('g -> 2, 'f         -> 1)))
+      Default57.countBy                          ('g).as("COUNT").check(bobjs(bobj('g -> 1, 'COUNT     -> 3), bobj('g -> 2, 'COUNT     -> 1)))
+      Default57.countBy                          ('g)            .check(bobjs(bobj('g -> 1, _count_all -> 3), bobj('g -> 2, _count_all -> 1)))
+      Default57.countWith        (_.count_all).by('g)            .check(bobjs(bobj('g -> 1, _count_all -> 3), bobj('g -> 2, _count_all -> 1)))
+      Default57.aggregate('f).wit(_.count_all).by('g)            .check(bobjs(bobj('g -> 1, 'f         -> 3), bobj('g -> 2, 'f         -> 1)))
 
 //if (false)Default57.countPresentBy('g1, 'g2)
 
-      Default57.countDistinctBy                       ('g).check(bobjs(bobj('g -> 1, _count -> 2), bobj('g -> 2, _count -> 1)))
-      Default57.countWith        (_.count_distinct).by('g).check(bobjs(bobj('g -> 1, _count -> 2), bobj('g -> 2, _count -> 1)))
-      Default57.aggregate('f).wit(_.count_distinct).by('g).check(bobjs(bobj('g -> 1, 'f     -> 2), bobj('g -> 2, 'f     -> 1)))
+      Default57.countDistinctBy                       ('g).check(bobjs(bobj('g -> 1, _count_all -> 2), bobj('g -> 2, _count_all -> 1)))
+      Default57.countWith        (_.count_distinct).by('g).check(bobjs(bobj('g -> 1, _count_all -> 2), bobj('g -> 2, _count_all -> 1)))
+      Default57.aggregate('f).wit(_.count_distinct).by('g).check(bobjs(bobj('g -> 1, 'f         -> 2), bobj('g -> 2, 'f         -> 1)))
 
-      Default57.countPresentBy                       ('g).check(bobjs(bobj('g -> 1, _count -> 2), bobj('g -> 2, _count -> 1)))
-      Default57.countWith        (_.count_present).by('g).check(bobjs(bobj('g -> 1, _count -> 2), bobj('g -> 2, _count -> 1)))
-      Default57.aggregate('f).wit(_.count_present).by('g).check(bobjs(bobj('g -> 1, 'f     -> 2), bobj('g -> 2, 'f     -> 1)))
+      Default57.countPresentBy                       ('g).check(bobjs(bobj('g -> 1, _count_all -> 2), bobj('g -> 2, _count_all -> 1)))
+      Default57.countWith        (_.count_present).by('g).check(bobjs(bobj('g -> 1, _count_all -> 2), bobj('g -> 2, _count_all -> 1)))
+      Default57.aggregate('f).wit(_.count_present).by('g).check(bobjs(bobj('g -> 1, 'f         -> 2), bobj('g -> 2, 'f         -> 1)))
 
-      Default57.countWith        (_.count_distinct_present).by('g).check(bobjs(bobj('g -> 1, _count -> 1), bobj('g -> 2, _count -> 1)))
-      Default57.aggregate('f).wit(_.count_distinct_present).by('g).check(bobjs(bobj('g -> 1, 'f     -> 1), bobj('g -> 2, 'f     -> 1)))
+      Default57.countWith        (_.count_distinct_present).by('g).check(bobjs(bobj('g -> 1, _count_all -> 1), bobj('g -> 2, _count_all -> 1)))
+      Default57.aggregate('f).wit(_.count_distinct_present).by('g).check(bobjs(bobj('g -> 1, 'f         -> 1), bobj('g -> 2, 'f         -> 1)))
 
-      Default57.countWith        (_.count_missing).by('g).check(bobjs(bobj('g -> 1, _count -> 1), bobj('g -> 2, _count -> 0)))
-      Default57.aggregate('f).wit(_.count_missing).by('g).check(bobjs(bobj('g -> 1, 'f     -> 1), bobj('g -> 2, 'f     -> 0)))
+      Default57.countWith        (_.count_missing).by('g).check(bobjs(bobj('g -> 1, _count_all -> 1), bobj('g -> 2, _count_all -> 0)))
+      Default57.aggregate('f).wit(_.count_missing).by('g).check(bobjs(bobj('g -> 1, 'f         -> 1), bobj('g -> 2, 'f         -> 0)))
 
     // ---------------------------------------------------------------------------
     // sum/count/... all by
-//FIXME: Default57.sumAllBy     ('f).test__//(bobjs(bobj('g -> 1, _count -> 2), bobj('g -> 2, _count -> 1)))
+//FIXME: Default57.sumAllBy     ('f).test__//(bobjs(bobj('g -> 1, _count_all -> 2), bobj('g -> 2, _count_all -> 1)))
 
     // ---------------------------------------------------------------------------
     Default52  .count('g)       .by('f)                   .check(bobjs(bobj('f -> "foo", 'g -> 2   ), bobj('f -> "foo2", 'g -> 1  )))
@@ -105,8 +157,8 @@ Default02b.toSum ('f ~> 'F).check(bobj('F -> 6  , 'g -> 1)) // f is ints
 
      val aaa2 =
          bobjs(
-             bobj('f -> "foo1", '_counts -> bobj('g1 -> 2, 'g2 -> 2)),
-             bobj('f -> "foo2", '_counts -> bobj('g1 -> 1, 'g2 -> 1)) )
+             bobj('f -> "foo1", '_count_alls -> bobj('g1 -> 2, 'g2 -> 2)),
+             bobj('f -> "foo2", '_count_alls -> bobj('g1 -> 1, 'g2 -> 1)) )
 
       AA.sumEach  ('g1, 'g2)  .by('f).check(aaa1)
       AA.countEach('g1, 'g2)  .by('f).check(aaa2)
@@ -123,7 +175,7 @@ Default02b.toSum ('f ~> 'F).check(bobj('F -> 6  , 'g -> 1)) // f is ints
           .by("f")
         .check(bobjs(
             bobj('f -> "foo" , _group -> bobj('g1 -> 2, 'g2 -> 1.8)),
-            bobj('f -> "bar" , _group -> bobj('g1 -> 1, 'g2 -> 5.6))) )            
+            bobj('f -> "bar" , _group -> bobj('g1 -> 1, 'g2 -> 5.6))) )
   }
 
 }

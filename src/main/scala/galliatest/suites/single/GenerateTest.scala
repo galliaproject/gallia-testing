@@ -11,7 +11,13 @@ object GenerateTest extends gallia.testing.Suite {
   override def test() {
 import TestDataO._  
 import galliatest.TestMeta._
+    // ===========================================================================
+    Default01.generate('f2).from(_.string('f)).using(_.toUpperCase).check(bobj('f -> "foo", 'g -> 1, 'f2 -> "FOO"))
+    Default01.generate('f2).from(         'f ).using(_.toUpperCase).check(bobj('f -> "foo", 'g -> 1, 'f2 -> "FOO"))
 
+    Default01.generate('f2).from(_.string('f)).using(_.in.noneIf(_ == "oof").map(_.toUpperCase)).check(aobj('f.string, 'g.int, 'f2.string_)(obj('f -> "foo", 'g -> 1, 'f2 -> "FOO")))
+    Default01.generate('f2).from(_.string('f)).using(_.in.noneIf(_ == "foo").map(_.toUpperCase)).check(aobj('f.string, 'g.int, 'f2.string_)(obj('f -> "foo", 'g -> 1)))
+        
     // ===========================================================================
 //    val Default010 = aobjs(Default01, Default01b)
     // TODO:x ([Err((200701174017,TypeMismatch) - for p |> f: expected: _One:String, got: _Nes:String)],digraph default {
@@ -23,24 +29,24 @@ import galliatest.TestMeta._
 
     // ---------------------------------------------------------------------------
 //Default03.boo('p).baa(_.string('f)).using(_.size)
-//Default03.transform(_.obj('p)).using { _.stringA('f).apply(_.size) }.check()
+//Default03.transform(_.entity('p)).using { _.stringA('f).apply(_.size) }.check()
 
     Default03
         .generate('h)
-          .from(_.obj('p))
+          .from(_.entity('p))
             .using(_.translate('f ~> 'F).using("foo" -> "oof").remove('g))
       .check(bobj('p -> bobj('f -> "foo", 'g -> 1), 'z -> true, 'h -> bobj('F -> "oof")))
 
    Default04
     .generate('p2)
-      .from(_.objz('p))
+      .from(_.entities('p))
         .using(_.rename('f ~> 'F))
       .check(bobj('p -> Seq(Default01, Default01b), 'z -> true, 'p2 -> Seq(bobj('F -> "foo", 'g -> 1), bobj('F -> "foo2", 'g -> 2))))
 
     // ===========================================================================
     Default03p
             .generate('h)
-              .from(_.obj('p))
+              .from(_.entity('p))
                 .using(_.translate('f ~> 'F).using("foo" -> "oof").remove('g))
           .check(aobj(
             cls('p   .cls_('f.string, 'g.int   ), 'z.boolean, 'h .cls_ ('F.string)))(
@@ -51,7 +57,7 @@ aobj(
   cls('p   .cls_('f.string, 'g.int   ), 'z.boolean))(
   obj('p -> obj ('f -> "foo", 'g -> 1), 'z -> true) )
       .generate('h)
-        .from(_.obj('p))
+        .from(_.entity('p))
           .using {
             _ .translate('f ~> 'F).using("foo" -> "oof")
               .remove('g) }
@@ -62,7 +68,7 @@ aobj(
 
         Default03m
             .generate('h)
-              .from(_.obj('p))
+              .from(_.entity('p))
                 .using(_.translate('f ~> 'F).using("foo" -> "oof").remove('g))
           .check(aobj(
             cls('p   .cls_('f.string, 'g.int   ), 'z.boolean, 'h .cls_ ('F.string)))(
@@ -71,7 +77,7 @@ aobj(
         // ---------------------------------------------------------------------------
         Default03p
             .generate('h)
-              .from(_.obj/*_*/('p))
+              .from(_.entity/*_*/('p))
                 .using(/*_.map(*/_.translate('f ~> 'F).using("foo" -> "oof").remove('g)/*)*/)
           .check(aobj(
             cls('p   .cls_('f.string, 'g.int   ), 'z.boolean, 'h .cls_ ('F.string)))(
@@ -79,7 +85,7 @@ aobj(
 
         Default03m
             .generate('h)
-              .from(_.obj/*_*/('p))
+              .from(_.entity/*_*/('p))
                 .using(/*_.map(*/_.translate('f ~> 'F).using("foo" -> "oof").remove('g)/*)*/)
           .check(aobj(
             cls('p   .cls_('f.string, 'g.int   ), 'z.boolean, 'h .cls_ ('F.string)))(
@@ -127,10 +133,6 @@ aobj(
     bobj('f -> 2,     'g -> 3.5)  .generate('f2).from('f, 'g).using { (f, g) => f * g }      .dataError[RuntimeError.DifferingRuntimeType] // see 210811110423@design
     bobj('f -> 2,     'g -> 3.4)  .generate('f2).from('f, 'g).using { (f, g) => f * g }      .dataError[RuntimeError.DifferingRuntimeType] // see 210811110423@design
     bobj('f -> 3.4,   'g -> 2)    .generate('f2).from('f, 'g).using { (f, g) => f * g }      .check(bobj('f -> 3.4,   'g -> 2,     'f2 -> 6.8))
-
-    Default01.generate('f2).from('f, 'g).using { (f, g) => f.sizeString    * g }.check(bobj('f -> "foo", 'g -> 1, 'f2 -> 3)) // uses TWV[T] with T=Int    
-    Default01.generate('f2).from('f, 'g).using { (f, g) => f.toString.size * g }.check(bobj('f -> "foo", 'g -> 1, 'f2 -> 3)) // uses     T  with T=Int
-  //Default01.generate('f2).from('f, 'g).using { (f, g) => f.toString.size + g }.check(bobj('f -> "foo", 'g -> 1, 'f2 -> 4)) // can't because scala allows: 3 + "foo" (bad?)   
     
     // ===========================================================================
     Default01
@@ -149,7 +151,7 @@ aobj(
               s.tail) }
         .check(
             bobj('f -> "foo", 'g -> 1, 'f1 -> "f" , 'f2 -> "oo")
-          .toNonRequired('f1) )
+          .toOptional('f1) )
 
     // ---------------------------------------------------------------------------
     def tmp4(x: AObj) =
@@ -358,17 +360,17 @@ aobj(
 //
 
     // ===========================================================================
-    Default03.generate('x).from(_.obj('p)).using(_.rename('f ~> 'F))
+    Default03.generate('x).from(_.entity('p)).using(_.rename('f ~> 'F))
       .check(aobj(
           cls('p   .cls ('f.string, 'g.int   ), 'z.boolean, 'x   .cls ('F.string, 'g.int   )))(
           obj('p -> obj ('f -> "foo", 'g -> 1), 'z -> true, 'x -> obj ('F -> "foo", 'g -> 1)) ))
 
-    Default03p.generate('x).from(_.obj('p)).using(_.rename('f ~> 'F))
+    Default03p.generate('x).from(_.entity('p)).using(_.rename('f ~> 'F))
       .check(aobj(
           cls('p   .cls_('f.string, 'g.int   ), 'z.boolean, 'x   .cls_('F.string, 'g.int   )))(
           obj('p -> obj ('f -> "foo", 'g -> 1), 'z -> true, 'x -> obj ('F -> "foo", 'g -> 1)) ))
 
-    Default03m.generate('x).from(_.obj('p)).using(_.rename('f ~> 'F))
+    Default03m.generate('x).from(_.entity('p)).using(_.rename('f ~> 'F))
       .check(aobj(
           cls('p   .cls_('f.string, 'g.int   ), 'z.boolean, 'x   .cls_('F.string, 'g.int   )))(
           obj(                                  'z -> true) ))

@@ -5,7 +5,7 @@ import gallia.vldt._Error.{Runtime => RuntimeError}
 
 // ===========================================================================
 object WhateverTest extends gallia.testing.Suite {
-	import TestDataO.{Default01, Default02, Default14m, Default14p}
+	import TestDataO.{Default01, Default02, Default14m, Default14p, Default17}
 
 	// ---------------------------------------------------------------------------
   override def test() {
@@ -145,6 +145,10 @@ object WhateverTest extends gallia.testing.Suite {
     Default01.generate('g2).from('g)          .using(_ + 3)   .check(bobj('f -> "foo", 'g -> 1, 'g2 -> 4))       // uses TWV[T] with T=Int
     Default01.generate('g2).from('g)          .using(_ => 4)  .check(bobj('f -> "foo", 'g -> 1, 'g2 -> 4))       // uses     T  with T=Int (actually 4)
 
+    Default01.generate('f2).from('f, 'g).using { (f, g) => f.sizeString    * g }.check(bobj('f -> "foo", 'g -> 1, 'f2 -> 3)) // uses TWV[T] with T=Int    
+    Default01.generate('f2).from('f, 'g).using { (f, g) => f.toString.size * g }.check(bobj('f -> "foo", 'g -> 1, 'f2 -> 3)) // uses     T  with T=Int
+  //Default01.generate('f2).from('f, 'g).using { (f, g) => f.toString.size + g }.check(bobj('f -> "foo", 'g -> 1, 'f2 -> 4)) // can't because scala allows: 3 + "foo" (bad?)   
+    
     // ===========================================================================
     // fuse
 
@@ -174,7 +178,24 @@ object WhateverTest extends gallia.testing.Suite {
     //
     //aobj(cls('f.string_, 'g.string_))(obj('f -> "a,b,c", 'g -> "1,2,3"))
     //    .fuse('f, 'g).as('fg).using { (v1, v2) => Seq(v1 + ":" + v2, v1 + ";" + v2) }
-    //  .check(bobj('fg -> Seq("a,b,c:1,2,3", "a,b,c;1,2,3")))      
+    //  .check(bobj('fg -> Seq("a,b,c:1,2,3", "a,b,c;1,2,3")))
+
+    // ===========================================================================
+    aobjs(Default14p, Default14m).filterBy("f").isPresent.check(aobjs(Default14p))
+    aobjs(Default14p, Default14m).filterBy("f").matches(!_.sizeList.isZero).check(aobjs(Default14p))
+
+    aobjs(Default14p, Default14m).filterBy("f").isMissing.check(aobjs(Default14m))
+
+    aobjs(Default14p, Default14m).filterBy("f").matches(_.sizeList.isZero).check(AObjs.empty(Default14p.c))
+
+    // ===========================================================================
+    TestDataS.Default51 .filterBy("f").hasSizeString(3).check(bobjs(Default01))
+
+    // ---------------------------------------------------------------------------
+    TestDataS.Default52b.filterBy("f").hasSizeList(2).check(TestDataS.Default52b)
+    TestDataS.Default52d.filterBy("f").hasSizeList(2).check(aobjs(Default14p, TestDataO.Default14p2, Default14p))
+
+    aobjs(Default14p, Default14m).filterBy("f").matches(_.sizeList >= 2).check(aobjs(Default14p))
   }
 
 }

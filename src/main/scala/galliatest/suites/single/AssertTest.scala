@@ -28,9 +28,9 @@ object AssertTest extends gallia.testing.Suite {
     in .noop(_.assertIsOne   ('f))
     in .noop(_.assertIsString('f))
     in .noop(_.assertField   ('f).matches(_.isOne))
-    in .noop(_.forKey(_.firstKey).zen(_ assertIsOne _))
+    in .noop(_.forKey(_.firstKey).thn(_ assertIsOne _))
 
-    in.assertIsString('g).metaError[_Error.ContaineeAssertionFailure]
+    in.assertIsString('g).metaError[_Error.ValueTypeAssertionFailure]
 
     in.noop(_.assertField('g).matches(_.isNumericalType))
   }
@@ -45,12 +45,12 @@ object AssertTest extends gallia.testing.Suite {
 
   // ===========================================================================
   private def testCustoms(inO: BObj, inS: BObjs) {
-    inO.customU2U(identity,       _.toUpperCase('f) ).check(      bobj('f -> "FOO", 'g -> 1))
+    inO.customU2U(identity,       _.transformPath('f, _.asInstanceOf[String].toUpperCase) ).check(      bobj('f -> "FOO", 'g -> 1))
 
-    inS.customU2U(identity,       _.toUpperCase('f) ).check(bobjs(bobj('f -> "FOO", 'g -> 1), bobj('f -> "FOO2", 'g -> 2)))
-    inS.customZ2Z(identity, _.map(_.toUpperCase('f))).check(bobjs(bobj('f -> "FOO", 'g -> 1), bobj('f -> "FOO2", 'g -> 2)))
-    inS.customZ2Z(identity,       _.toUpperCase('f) ).check(bobjs(bobj('f -> "FOO", 'g -> 1), bobj('f -> "FOO2", 'g -> 2)))
-    inS.customS2S(identity, _.map(_.toUpperCase('f))).check(bobjs(bobj('f -> "FOO", 'g -> 1), bobj('f -> "FOO2", 'g -> 2)))
+    inS.customU2U(identity,       _.transformPath('f, _.asInstanceOf[String].toUpperCase) ).check(bobjs(bobj('f -> "FOO", 'g -> 1), bobj('f -> "FOO2", 'g -> 2)))
+    inS.customZ2Z(identity, _.map(_.transformPath('f, _.asInstanceOf[String].toUpperCase))).check(bobjs(bobj('f -> "FOO", 'g -> 1), bobj('f -> "FOO2", 'g -> 2)))
+    inS.customZ2Z(identity,       _.transformPath('f, _.asInstanceOf[String].toUpperCase) ).check(bobjs(bobj('f -> "FOO", 'g -> 1), bobj('f -> "FOO2", 'g -> 2)))
+    inS.customS2S(identity, _.map(_.transformPath('f, _.asInstanceOf[String].toUpperCase))).check(bobjs(bobj('f -> "FOO", 'g -> 1), bobj('f -> "FOO2", 'g -> 2)))
 
     // ---------------------------------------------------------------------------
     {

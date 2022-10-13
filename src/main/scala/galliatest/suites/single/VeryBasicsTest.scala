@@ -6,7 +6,7 @@ import gallia.vldt._Error
 
 // ===========================================================================
 object VeryBasicsTest extends gallia.testing.Suite {
-  import TestDataO.{Default00, Default01, Default03, Default06, Default06a, Default09}
+  import TestDataO.{Default00, Default01, Default03, Default03b, Default06, Default06a, Default09}
 
   // ===========================================================================
   override def test() {
@@ -35,34 +35,36 @@ object VeryBasicsTest extends gallia.testing.Suite {
     // ===========================================================================
     // rename
 
-    Default01.rename('f).to('F)  check bobj('F -> "foo", 'g -> 1)
-    Default01.rename("f" ~> 'F)  check bobj('F -> "foo", 'g -> 1)
-    Default01.rename('f).to("F") check bobj('F -> "foo", 'g -> 1)
-    Default01.rename('f ~> "F" ) check bobj('F -> "foo", 'g -> 1)
+    Default01.rename('f).to('F) .check(bobj('F -> "foo", 'g -> 1))
+    Default01.rename("f" ~> 'F) .check(bobj('F -> "foo", 'g -> 1))
+    Default01.rename('f).to("F").check(bobj('F -> "foo", 'g -> 1))
+    Default01.rename('f ~> "F" ).check(bobj('F -> "foo", 'g -> 1))
   
     // ---------------------------------------------------------------------------
-    Default03.rename('p |> 'f ~> 'F ) check bobj('p -> bobj('F -> "foo", 'g -> 1), 'z -> true)
-    Default03.rename('p |> 'f).to('F) check bobj('p -> bobj('F -> "foo", 'g -> 1), 'z -> true)
+    Default03.rename('p |> 'f ~> 'F ).check(bobj('p -> bobj('F -> "foo", 'g -> 1), 'z -> true))
+    Default03.rename('p |> 'f).to('F).check(bobj('p -> bobj('F -> "foo", 'g -> 1), 'z -> true))
   //Default03.rename('p |> 'f).test() // shouldn't compile
 
     // ---------------------------------------------------------------------------
-    bobj('FooBar -> 1)       .renameToUpperCase('FooBar)  check bobj('FOOBAR -> 1)
-    bobj(           'f -> 1 ).renameToUpperCase(      'f) check bobj(           'F -> 1 )
-    bobj('p -> bobj('f -> 1)).renameToUpperCase('p |> 'f) check bobj('p -> bobj('F -> 1))
+    bobj('FooBar -> 1)       .renameToUpperCase('FooBar) .check(bobj('FOOBAR -> 1))
+    bobj(           'f -> 1 ).renameToUpperCase(      'f).check(bobj(           'F -> 1 ))
+    bobj('p -> bobj('f -> 1)).renameToUpperCase('p |> 'f).check(bobj('p -> bobj('F -> 1)))
 
     // ===========================================================================
     // retain
     
-    val retainIn = bobj('p -> bobj('f1 -> 1, 'f2 -> 2), 'f3 -> 3, 'z -> true)
-      retainIn.retain(                      'f3,          'z) check bobj(                                'f3 -> 3, 'z -> true)
-      retainIn.retain('p,                                 'z) check bobj('p -> bobj('f1 -> 1, 'f2 -> 2),           'z -> true)
-      retainIn.retain('p |> 'f1,                          'z) check bobj('p -> bobj('f1 -> 1),                     'z -> true)
-      retainIn.retain(           'p |> 'f2,               'z) check bobj('p -> bobj(          'f2 -> 2),           'z -> true)
-      retainIn.retain('p |> 'f1, 'p |> 'f2,               'z) check bobj('p -> bobj('f1 -> 1, 'f2 -> 2),           'z -> true)
-      retainIn.retain(_.customKeys(_.tail))                   check bobj(                                'f3 -> 3, 'z -> true)
-      retainIn.retain('p ~> 'P)                               check bobj('P -> bobj('f1 -> 1, 'f2 -> 2))
-      retainIn.retain('p |> 'f1 ~> 'F1, 'p |> 'f2 ~> 'F2)     check bobj('p -> bobj('F1 -> 1, 'F2 -> 2))
-      retainIn.retain('p |> 'f1 ~> 'F1, 'p |> 'f2 ~> 'F2, 'z) check bobj('p -> bobj('F1 -> 1, 'F2 -> 2),           'z -> true)
+    val retainIn = Default03b
+
+      retainIn.retain(                      'f3,          'z).check(bobj(                                'f3 -> 3, 'z -> true))
+      retainIn.retain('p,                                 'z).check(bobj('p -> bobj('f1 -> 1, 'f2 -> 2),           'z -> true))
+      retainIn.retain('p |> 'f1,                          'z).check(bobj('p -> bobj('f1 -> 1),                     'z -> true))
+      retainIn.retain(           'p |> 'f2,               'z).check(bobj('p -> bobj(          'f2 -> 2),           'z -> true))
+      retainIn.retain('p |> 'f1, 'p |> 'f2,               'z).check(bobj('p -> bobj('f1 -> 1, 'f2 -> 2),           'z -> true))
+      retainIn.retain(_.customKeys(_.tail))                  .check(bobj(                                'f3 -> 3, 'z -> true))
+      retainIn.retain('p ~> 'P)                              .check(bobj('P -> bobj('f1 -> 1, 'f2 -> 2)))
+      retainIn.retain('p |> 'f1 ~> 'F1, 'p |> 'f2 ~> 'F2)    .check(bobj('p -> bobj('F1 -> 1, 'F2 -> 2)))
+      retainIn.retain('p |> 'f1 ~> 'F1, 'p |> 'f2 ~> 'F2, 'z).check(bobj('p -> bobj('F1 -> 1, 'F2 -> 2),           'z -> true))
+
 retainIn.retain(_.indices(0, 1))// TODO: add test    
 retainIn.retain(_.index  (0))   // TODO: add test    
 
@@ -88,7 +90,7 @@ Default01.remove(_.indices(0, 1))// TODO: add test
     // ===========================================================================
     // add
     
-    Default01.add('h -> true) check bobj('f -> "foo", 'g -> 1, 'h -> true)    
+    Default01.add('h -> true) check bobj('f -> "foo", 'g -> 1, 'h -> true)
 
 //TODO: allow? - Default01.add('p >| 'f ->     "x"                          ) - see t210111113206    
 

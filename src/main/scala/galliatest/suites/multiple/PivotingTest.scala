@@ -34,8 +34,8 @@ object PivotingTest extends gallia.testing.Suite {
 
       // ---------------------------------------------------------------------------
       out = aobjs(
-          bobj('f -> "f1", 'a -> Seq(1, 2), 'b -> Seq(3)             ).toNonRequired('a, 'b),
-          bobj('f -> "f2", 'a -> Seq(4   )            , 'c ->  Seq(5)).toNonRequired('a, 'c) ) )
+          bobj('f -> "f1", 'a -> Seq(1, 2), 'b -> Seq(3)             ).toOptional('a, 'b),
+          bobj('f -> "f2", 'a -> Seq(4   )            , 'c ->  Seq(5)).toOptional('a, 'c) ) )
 
     // ===========================================================================
     testPivotEmulation(
@@ -48,8 +48,8 @@ object PivotingTest extends gallia.testing.Suite {
             bobj('f1 -> "f12", 'f2 -> "f22", 'g1 -> "c", 'g2 -> "x", 'h1 -> 5, 'h2 -> 25) ),
       out =
           aobjs(
-            bobj('f1 -> "f11", 'f2 -> "f21", 'a_z ->  9, 'b_y -> 27              ).toNonRequired('a_z, 'b_y),
-            bobj('f1 -> "f12", 'f2 -> "f22", 'a_z -> 64            , 'c_x ->  125).toNonRequired('a_z,      'c_x) ) )
+            bobj('f1 -> "f11", 'f2 -> "f21", 'a_z ->  9, 'b_y -> 27              ).toOptional('a_z, 'b_y),
+            bobj('f1 -> "f12", 'f2 -> "f22", 'a_z -> 64            , 'c_x ->  125).toOptional('a_z,      'c_x) ) )
 
     // ===========================================================================
     testPivot(
@@ -62,20 +62,31 @@ object PivotingTest extends gallia.testing.Suite {
 
         // ---------------------------------------------------------------------------
         out1 = aobjs(
-            bobj('f -> "f1", 'a -> Seq(1), 'b -> Seq(3)             ).toNonRequired('a, 'b),
-            bobj('f -> "f2", 'a -> Seq(4)            , 'c ->  Seq(5)).toNonRequired('a,    'c)),
+            bobj('f -> "f1", 'a -> Seq(1), 'b -> Seq(3)             ).toOptional('a, 'b),
+            bobj('f -> "f2", 'a -> Seq(4)            , 'c ->  Seq(5)).toOptional('a,    'c)),
         out2 = aobjs(
-            bobj('f -> "f1", 'a -> -1, 'b -> 3            ).toNonRequired('a, 'b),
-            bobj('f -> "f2", 'a -> 4            , 'c ->  5).toNonRequired('a,     'c)) )
+            bobj('f -> "f1", 'a -> -1, 'b -> 3            ).toOptional('a, 'b),
+            bobj('f -> "f2", 'a -> 4            , 'c ->  5).toOptional('a,     'c)) )
 
+    // ---------------------------------------------------------------------------
+    // test pivone
+
+    Default52.pivone("f").asNewKeys("foo", "foo2").check(aobj(
+        cls("foo"     .clss_("g".int),                  "foo2"     .clss_("g".int)))(
+        obj("foo" -> Seq(obj("g" -> 1), obj("g" -> 1)), "foo2" -> Seq(obj("g" -> 2))) ))
+
+      // ---------------------------------------------------------------------------
+      Default52.pivone("f").asNewKeys[galliatest.suites.MyEnum2].check(aobj(
+        cls("foo"     .clss_("g".int),                  "foo2"     .clss_("g".int)))(
+        obj("foo" -> Seq(obj("g" -> 1), obj("g" -> 1)), "foo2" -> Seq(obj("g" -> 2))) ))
   }
 
   // ===========================================================================
   private def testNoRowsPivot00(in: BObjs) {
     in.transformString('g).using(_ => "").group('f).by('g).pivot('f).column('g).asNewKeys('a, 'b).dataError(vldt.ErrorId.Runtime.EmptyKey)
 
-    in.group('f).by('g).pivot('f).column('g).asNewKeys('a, 'b)             .check(bobj('a -> Seq(1, 1), 'b -> Seq(2, 2)).toNonRequired('a, 'b))
-    in.group('f).by('g).unarrayEntries  ('g).asNewKeys('a, 'b).valueKey('f).check(bobj('a -> Seq(1, 1), 'b -> Seq(2, 2)).toNonRequired('a, 'b))
+    in.group('f).by('g).pivot('f).column('g).asNewKeys('a, 'b)             .check(bobj('a -> Seq(1, 1), 'b -> Seq(2, 2)).toOptional('a, 'b))
+    in.group('f).by('g).unarrayEntries  ('g).asNewKeys('a, 'b).valueKey('f).check(bobj('a -> Seq(1, 1), 'b -> Seq(2, 2)).toOptional('a, 'b))
     in.group('f).by('g).unarrayBy0      ('g).asNewKeys('a, 'b) //FIXME: t210303103728 - meta and data disagree
   }
 
@@ -100,8 +111,8 @@ object PivotingTest extends gallia.testing.Suite {
     in.pivot(      'h )                .rows('f).column('g).asNewKeys('a, 'b, 'c).check(out)
 
     // ---------------------------------------------------------------------------
-    inDistinct.unarrayEntries  ('f).asNewKeys('f1, 'f2).valueKey('h).check(bobj('f1 -> 1, 'f2 -> 5).toNonRequired('f1, 'f2))
-    inDistinct.pivot('h).column('f).asNewKeys('f1, 'f2)             .check(bobj('f1 -> 1, 'f2 -> 5).toNonRequired('f1, 'f2))
+    inDistinct.unarrayEntries  ('f).asNewKeys('f1, 'f2).valueKey('h).check(bobj('f1 -> 1, 'f2 -> 5).toOptional('f1, 'f2))
+    inDistinct.pivot('h).column('f).asNewKeys('f1, 'f2)             .check(bobj('f1 -> 1, 'f2 -> 5).toOptional('f1, 'f2))
 
     inDistinct             .unarrayBy0('f    ).asNewKeys('f1  , 'f2                )                        .check(bobj('f1   -> bobj('g -> "a", 'h -> 1), 'f2   -> bobj('g -> "c", 'h -> 5)))
     inDistinct             .unarrayBy0('f, 'g).asNewKeys('f1_a,               'f2_c).withDefaultKeySeparator.check(bobj('f1_a -> bobj('h -> 1)           , 'f2_c -> bobj('h -> 5)))
@@ -114,9 +125,9 @@ object PivotingTest extends gallia.testing.Suite {
     // manual pivot 1 (meh)
     in
       .groupBy('f1, 'f2).as('_group1)
-      .transform(   _.objz('_group1)).using {
+      .transform(   _.entities('_group1)).using {
         _ .groupBy('g1, 'g2).as('_group2)
-          .transform(   _.objz('_group2)).using {
+          .transform(   _.entities('_group2)).using {
             _.squash(_.int('h1), _.int('h2)).using {
               _ .map { case (h1, h2) => h1 * h2 }
                 .sum } }
@@ -131,7 +142,7 @@ object PivotingTest extends gallia.testing.Suite {
       .fuse('g1, 'g2).as('g).using(_ + "_" + _)
       .fuse('h1, 'h2).as('h).using(_ * _)
       .groupBy('f1, 'f2)
-      .transformGroupObjectsUsing {
+      .transformGroupEntitiesUsing {
         _ .sum('h)    .by('g)
           .pivot('h).column('g).asNewKeys('a_z, 'b_y, 'c_x) }
       .unnestAllFrom(_group)

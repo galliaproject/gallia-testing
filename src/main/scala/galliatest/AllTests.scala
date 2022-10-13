@@ -25,12 +25,12 @@ object AllTests extends App {
     single.GenerateTest,
     single.CotransformTest,
     
-    single.UntuplifyTest,
+    single.DeserializeTest,
     single.ZipTest,
     
     single.ForXTest,
     
-    single.CcMappingTest,
+    single.DataClassesTest,
     single.SquashingTest,
     single.WhateverTest,
     single.UncommonTypesTest,
@@ -38,7 +38,9 @@ object AllTests extends App {
     single.UnpivotTest,
     
     // ---------------------------------------------------------------------------
-    multiple.FilterTest,
+    multiple.StreamerTest,
+
+    multiple.FilterByTest,
     multiple.FlattenByTest,
     multiple.SortingTest,
     multiple.GroupingTest, 
@@ -48,11 +50,21 @@ object AllTests extends App {
     multiple.PivotingTest,
     multiple.MergingTest,
     
+    multiple.HeadZTest,
+    
     // ---------------------------------------------------------------------------
-    SchemaInferrerTest,
+    CustomTest,
     GraphTest,
     IoTest,
+    SchemaInferrerTest,
+    TargetSelectionTest,
+    RuntimeValidationTest,
+    UnionTypeTest,
+    EnumTest,
+    TimeTest,
+    MetaSchemaTest,
   )
+  if (false) Obg9Test // obg9 is codename for memory-optimized Obj counterpart (not in use yet) - good for dense data
 
 }
 

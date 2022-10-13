@@ -22,7 +22,9 @@ object SetDefaultValueForTest extends gallia.testing.Suite {
     inM.setDefaultFor('f ~> 'F    ).asValue("-").check(bobj('F -> "-", 'g -> 1, 'h -> true))
     inM.setDefaultFor('f ~> 'F, 'g).asValue("-").metaError(vldt.ErrorId.TypeMismatch)
 
-    inM.forKey(_.firstKey).zen(_.setDefaultFor(_).asValue("-")).check(bobj('f -> "-", 'g -> 1, 'h -> true))
+    aobj(cls('p.cls('f.string_, 'g.int), 'z.boolean))(obj('p -> obj('g -> 1), 'z -> true)).setDefaultFor('p |> 'f).asValue("foo").check(TestDataO.Default03)
+    
+    inM.forKey(_.firstKey).thn(_.setDefaultFor(_).asValue("-")).check(bobj('f -> "-", 'g -> 1, 'h -> true))
     inM.setDefaultFor(_.firstKey  ).asValue("-").check(bobj('f -> "-", 'g -> 1, 'h -> true))
     inP.setDefaultFor('f          ).asValue("-").check(bobj('f -> "foo", 'g -> 1, 'h -> true))
     inP.setDefaultFor('f ~> 'F    ).asValue("-").check(bobj('F -> "foo", 'g -> 1, 'h -> true))

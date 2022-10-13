@@ -6,11 +6,10 @@ import gallia.vldt._Error.Runtime
 
 // ===========================================================================
 object ConvertTest extends gallia.testing.Suite {
-	import TestDataO._
+  import TestDataO._
 
-	// ---------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
   override def test() {
-
     Default01.convert('g).toStr.check(bobj('f -> "foo", 'g -> "1"))
 
     bobj('f -> -1    , 'g -> 1).convert('f).toBoolean(-1 ,  1 ).check(bobj('f -> true, 'g -> 1))
@@ -23,10 +22,10 @@ object ConvertTest extends gallia.testing.Suite {
     val outputPresent = aobj(cls('f.string, 'g.int_))(obj('f -> "foo", 'g ->  1 ))
     val outputMissing = aobj(cls('f.string, 'g.int_))(obj('f -> "foo"           ))
 
-    Default01.convert('g).toNonRequired                  .check(outputPresent)
-    Default01.convert('g).toNonRequired(strict = true)   .check(outputPresent)
-    Default01.customField('g).using(_.toNonRequired)     .check(outputPresent)
-    Default01.customU2U(_.toNonRequired('g), identity)   .check(outputPresent)
+    Default01.convert('g).toOptional                  .check(outputPresent)
+    Default01.convert('g).toOptional(strict = true)   .check(outputPresent)
+    Default01.customField('g).using(_.toOptional)        .check(outputPresent)
+    Default01.customU2U(_.toOptional('g), identity)   .check(outputPresent)
 
     outputPresent.convert('g).toRequired               .check(Default01)
     outputPresent.convert('g).toRequired(strict = true).check(Default01)
@@ -36,8 +35,8 @@ object ConvertTest extends gallia.testing.Suite {
     Default01.convert('g).toMultiple               .check(bobj('f -> "foo", 'g -> Seq(1)))
     Default01.convert('g).toMultiple(strict = true).check(bobj('f -> "foo", 'g -> Seq(1)))
 
-    bobj('f -> "foo", 'g -> Seq(1)).convert('g).toNonMultiple               .check(Default01)
-    bobj('f -> "foo", 'g -> Seq(1)).convert('g).toNonMultiple(strict = true).check(Default01)
+    bobj('f -> "foo", 'g -> Seq(1)).convert('g).toSingle               .check(Default01)
+    bobj('f -> "foo", 'g -> Seq(1)).convert('g).toSingle(strict = true).check(Default01)
 
 
     bobj('f -> "foo", 'g -> "1.00").convert('g).toInt.check(Default01)
@@ -89,7 +88,7 @@ object ConvertTest extends gallia.testing.Suite {
     bobj('value -> BigInt    (3)).convert('value).toInt.check(bobj('value -> 3))
     bobj('value -> BigDecimal(3)).convert('value).toInt.check(bobj('value -> 3))
     bobj('value -> scala.BigDecimal(3)).convert('value).toInt.check(bobj('value -> 3))
-    bobj('value -> "2021-01-08".date).transform(_.date('value)).using(_.getYear.toString).convert('value).toInt.check(bobj('value -> 2021))
+    bobj('value -> "2021-01-08".parseLocalDate).transform(_.localDate('value)).using(_.getYear.toString).convert('value).toInt.check(bobj('value -> 2021))
 
     // ---------------------------------------------------------------------------
     val output3 = bobj('p -> Seq(

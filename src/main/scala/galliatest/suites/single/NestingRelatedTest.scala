@@ -70,6 +70,12 @@ object NestingRelatedTest extends gallia.testing.Suite {
     // ---------------------------------------------------------------------------
     bobj('a_b_c -> 1)            .renestAllKeys.usingDefaultSeparator.check(bobj('a -> bobj('b -> bobj('c -> 1))))
     bobj('x_A -> 1, 'y_B -> true).renestIfKeys(_.startsWith("x")).usingSeparator("_").check(bobj('y_B -> true, 'x -> bobj('A -> 1)))
+
+    // ===========================================================================
+    // nest into + denormalization
+    Default04.nest("z").into("p").check(bobj('p -> Seq(
+        bobj('f -> "foo" , 'g -> 1, 'z -> true),
+        bobj('f -> "foo2", 'g -> 2, 'z -> true))))
   }
 
 }
