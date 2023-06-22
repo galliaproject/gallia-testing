@@ -1,10 +1,11 @@
-package galliatest
-package suites.single
+package galliatesting0
+package suites
+package single
 
 import gallia._
 
 // ===========================================================================
-object ZipTest extends gallia.testing.Suite {
+object ZipTest extends gallia.testing.Suite with gallia.testing.More {
 
   override def test() {
     //bobj('f -> Seq("a", "b", "c"), 'g -> Seq("1", "2", "3").zip('f, 'g).underNewKey('p) // TODO: t210111113343 - add support for zip (non-strings) for consistency

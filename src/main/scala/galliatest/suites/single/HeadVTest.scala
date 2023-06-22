@@ -1,7 +1,9 @@
-package galliatest.suites.single
+package galliatesting0
+package suites
+package single
 
 // ===========================================================================
-object HeadVTest extends gallia.testing.Suite {
+object HeadVTest extends gallia.testing.Suite with gallia.testing.More {
   import TestDataO._
   import gallia.{bobj, _vle, headV}
 

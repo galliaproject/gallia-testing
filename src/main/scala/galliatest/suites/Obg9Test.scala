@@ -1,11 +1,12 @@
-package galliatest.suites
+package galliatesting0
+package suites
 
 import aptus._
 import gallia._
 
 // ===========================================================================
 /** obg9 is codename for memory-optimized Obj counterpart (not in use yet) - good for dense data */
-object Obg9Test extends gallia.testing.Suite {
+object Obg9Test extends gallia.testing.Suite with gallia.testing.More {
   import TestDataO._
   import Obg9TestData._
 
@@ -76,19 +77,19 @@ object Obg9Test extends gallia.testing.Suite {
       Default01.remove("f")._assert(bobj("g" -> 1))
       Default01.remove("g")._assert(bobj("f" -> "foo"))
 
-      Default06.remove("f1")      ._assert(bobj(               "f2" -> "foo" , "g" -> 1))
-      Default06.remove("f2")      ._assert(bobj("f1" -> "foo" ,                "g" -> 1))
-      Default06.remove("g")       ._assert(bobj("f1" -> "foo" , "f2" -> "foo"          ))
+      Default06.remove("f1")      ._assert(bobj(               "f2" -> "foo", "g" -> 1))
+      Default06.remove("f2")      ._assert(bobj("f1" -> "foo",                "g" -> 1))
+      Default06.remove("g")       ._assert(bobj("f1" -> "foo", "f2" -> "foo"))
       Default06.remove("f1", "f2")._assert(bobj(                              "g" -> 1))
-      Default06.remove("f1", "g") ._assert(bobj(               "f2" -> "foo"          ))
+      Default06.remove("f1", "g") ._assert(bobj(               "f2" -> "foo"))
 
-      Default06.retain("f1")      ._assert(bobj("f1" -> "foo"                         ))
-      Default06.retain("f2")      ._assert(bobj(               "f2" -> "foo"          ))
+      Default06.retain("f1")      ._assert(bobj("f1" -> "foo"))
+      Default06.retain("f2")      ._assert(bobj(               "f2" -> "foo"))
       Default06.retain("g")       ._assert(bobj(                              "g" -> 1))
-      Default06.retain("f1", "f2")._assert(bobj("f1" -> "foo" , "f2" -> "foo"          ))
-      Default06.retain("f1", "g") ._assert(bobj("f1" -> "foo" ,                "g" -> 1))
+      Default06.retain("f1", "f2")._assert(bobj("f1" -> "foo", "f2" -> "foo"))
+      Default06.retain("f1", "g") ._assert(bobj("f1" -> "foo",                "g" -> 1))
 
-      Default01.add    ("f2" -> "foo2", "f3" -> "foo3")._assert(bobj("f" -> "foo" , "g" -> 1, "f2" -> "foo2", "f3" -> "foo3"))
+      Default01.add    ("f2" -> "foo2", "f3" -> "foo3")._assert(bobj("f" -> "foo", "g" -> 1, "f2" -> "foo2", "f3" -> "foo3"))
       Default01.replace("f"  -> "foo2", "g"  -> 2)     ._assert(bobj("f" -> "foo2", "g" -> 2))
 
       Default01.reorderKeys           (_.reverse)._assert(                         bobj("g" -> 1, "f" -> "foo"))
@@ -162,11 +163,11 @@ object Obg9Test extends gallia.testing.Suite {
           .using(_ + 1)
           ._assert(bobj("p" -> bobj("f" -> "foo", "g" -> 1, "g2" -> 2), "z" -> true))
 
-      Default01.removeIfValueFor(_.string("f")).is("FOO")._assert(aobj(cls("f".string_, "g".int))(obj("f" -> "foo" , "g" -> 1)))
+      Default01.removeIfValueFor(_.string("f")).is("FOO")._assert(aobj(cls("f".string_, "g".int))(obj("f" -> "foo", "g" -> 1)))
       Default01.removeIfValueFor(_.string("f")).is("foo")._assert(aobj(cls("f".string_, "g".int))(obj(               "g" -> 1)))
 
-      Default03.removeIfValueFor(_.string("p" |> "f")).is("FOO")._assert(aobj(cls("p".cls("f".string_, "g".int), "z".boolean))(obj("p" -> obj("f" -> "foo" , "g" -> 1), "z" -> true)))
-      Default03.removeIfValueFor(_.string("p" |> "f")).is("foo")._assert(aobj(cls("p".cls("f".string_, "g".int), "z".boolean))(obj("p" -> obj(               "g" -> 1), "z" -> true)))
+      Default03.removeIfValueFor(_.string("p" |> "f")).is("FOO")._assert(aobj(cls("p".cls("f".string_, "g".int), "z".boolean))(obj("p" -> obj("f" -> "foo", "g" -> 1), "z" -> true)))
+      Default03.removeIfValueFor(_.string("p" |> "f")).is("foo")._assert(aobj(cls("p".cls("f".string_, "g".int), "z".boolean))(obj("p" -> obj(              "g" -> 1), "z" -> true)))
 
       Default13p.setDefaultFor("f").asValue("FOO")._assert(Default01)
       Default13m.setDefaultFor("f").asValue("foo")._assert(Default01)

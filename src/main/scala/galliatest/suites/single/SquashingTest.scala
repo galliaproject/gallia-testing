@@ -1,11 +1,13 @@
-package galliatest.suites.single
+package galliatesting0
+package suites
+package single
 
 import aptus._
 import gallia._
 import gallia.vldt.ErrorId ._
 
 // ===========================================================================
-object SquashingTest extends gallia.testing.Suite {
+object SquashingTest extends gallia.testing.Suite with gallia.testing.More {
   import TestDataO._
   import TestDataS._
   
@@ -96,12 +98,12 @@ object SquashingTest extends gallia.testing.Suite {
     // accessors
 
   //Default01.squash(_.string("f")).using(identity).check("foo")
-    Default01 .grab(_.string ("f")).check(     "foo")
+    Default01 .grab(_.string ("f"))                .check("foo")
     Default15p.grab(_.string_("f")).check(Some("foo"))
     Default15m.grab(_.string_("f")).check(None)
 
     Default01     .string("f").check("foo")
-    Default01.forceString("f").check("foo" )
+    Default01.forceString("f").check("foo")
 
            present1.string("f").metaError(TypeMismatch)
     throws(present1.forceString("f"))

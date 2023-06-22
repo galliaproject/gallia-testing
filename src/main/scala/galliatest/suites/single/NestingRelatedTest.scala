@@ -1,9 +1,11 @@
-package galliatest.suites.single
+package galliatesting0
+package suites
+package single
 
 import gallia._
 
 // ===========================================================================
-object NestingRelatedTest extends gallia.testing.Suite {
+object NestingRelatedTest extends gallia.testing.Suite with gallia.testing.More {
   import TestDataO._
   
   // ===========================================================================
@@ -31,18 +33,23 @@ object NestingRelatedTest extends gallia.testing.Suite {
     
     Default06.nest('f1     )         .under('F).check(bobj('f2 -> "foo", 'g -> 1, 'F -> bobj('f1 -> "foo")))
 
-    Default03.nest('z).into('p ~> 'P).check(bobj('P -> bobj('f -> "foo" , 'g -> 1, 'z -> true)))
+    Default03.nest('z).into('p ~> 'P).check(bobj('P -> bobj('f -> "foo", 'g -> 1, 'z -> true)))
 
    // ===========================================================================
    // unnest
 
     Default03.unnestFrom('p).field('f)      .check(bobj('p -> bobj('g -> 1), 'z -> true, 'f -> "foo"))
-    Default03.unnestFrom('p).field('f ~> 'F).check(bobj('p -> bobj('g -> 1), 'z -> true, 'F -> "foo"))    
+    Default03.unnestFrom('p).field('f ~> 'F).check(bobj('p -> bobj('g -> 1), 'z -> true, 'F -> "foo"))
 
     Default03.unnestAllFrom('p)       .check(bobj('z -> true, 'f -> "foo", 'g -> 1))
 
     Default01.unnestFrom('f).field('g).metaError("210109145953" -> "")
     Default04.unnestFrom('p).field('g).metaError("210109145954" -> "")
+
+    // ---------------------------------------------------------------------------
+    // regression test ciphia bug
+    aobj(cls('p.cls('f.string_, 'g.int)))(obj('p -> obj('f -> "foo", 'g -> 1))).unnestFrom("p").field("f").display()
+    aobj(cls('p.cls('f.string_, 'g.int)))(obj('p -> obj(             'g -> 1))).unnestFrom("p").field("f").display()
 
     // ---------------------------------------------------------------------------
     val OooIn  = bobj('p -> Seq(Default00, Default00b), 'z -> true)
@@ -74,7 +81,7 @@ object NestingRelatedTest extends gallia.testing.Suite {
     // ===========================================================================
     // nest into + denormalization
     Default04.nest("z").into("p").check(bobj('p -> Seq(
-        bobj('f -> "foo" , 'g -> 1, 'z -> true),
+        bobj('f -> "foo",  'g -> 1, 'z -> true),
         bobj('f -> "foo2", 'g -> 2, 'z -> true))))
   }
 

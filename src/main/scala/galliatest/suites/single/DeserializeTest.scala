@@ -1,9 +1,11 @@
-package galliatest.suites.single
+package galliatesting0
+package suites
+package single
 
 import gallia._
 
 // ===========================================================================
-object DeserializeTest extends gallia.testing.Suite { // formerly UntuplifyTest
+object DeserializeTest extends gallia.testing.Suite with gallia.testing.More { // formerly UntuplifyTest
 
   import enumeratum.{Enum, EnumEntry}
   sealed trait DeserializeEnum extends EnumEntry

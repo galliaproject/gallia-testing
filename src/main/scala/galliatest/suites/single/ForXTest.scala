@@ -1,4 +1,4 @@
-package galliatest
+package galliatesting0
 package suites
 package single
 
@@ -6,7 +6,7 @@ import gallia._
 import gallia.vldt.ErrorId
 
 // ===========================================================================
-object ForXTest extends gallia.testing.Suite {
+object ForXTest extends gallia.testing.Suite with gallia.testing.More {
 	import TestDataO.{Default01, Default00, Default03, Default06a}
 	
 	// ---------------------------------------------------------------------------

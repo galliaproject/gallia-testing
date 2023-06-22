@@ -1,11 +1,11 @@
-package galliatest
+package galliatesting0
 
 // ===========================================================================
 object AllTests extends App {
   import suites._
 
   // ---------------------------------------------------------------------------
-  gallia.testing.testSuites(
+  gallia.testing.More.testSuites(
     single.VeryBasicsTest,
     single.SomewhatBasicsTest,
 
@@ -30,7 +30,7 @@ object AllTests extends App {
     
     single.ForXTest,
     
-    single.DataClassesTest,
+    // single.DataClassesTest, -> moved to gallia-core (using utest)
     single.SquashingTest,
     single.WhateverTest,
     single.UncommonTypesTest,

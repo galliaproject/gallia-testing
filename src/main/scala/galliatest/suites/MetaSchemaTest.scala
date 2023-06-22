@@ -1,11 +1,11 @@
-package galliatest
+package galliatesting0
 package suites
 
 import gallia._
 import aptus._
 
 // ===========================================================================
-object MetaSchemaTest extends gallia.testing.Suite {
+object MetaSchemaTest extends gallia.testing.Suite with gallia.testing.More {
 
   override def test() { TestDataO.Default01.noop(_.identity)
     val input    = cls("p".cls("f".string, "g".int), "h".boolean)

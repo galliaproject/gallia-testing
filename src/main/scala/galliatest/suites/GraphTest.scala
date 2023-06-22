@@ -1,11 +1,11 @@
-package galliatest.suites
+package galliatesting0
+package suites
 
-import scala.util.chaining._
 import gallia._
-import aptus._
+import aptus.{Anything_, String_}
 
 // ===========================================================================
-object GraphTest extends gallia.testing.Suite {
+object GraphTest extends gallia.testing.Suite with gallia.testing.More {
 
   override def test() {
     val in: HeadO = bobj("f" -> "foo", "g" -> 1)

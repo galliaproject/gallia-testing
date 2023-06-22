@@ -1,9 +1,11 @@
-package galliatest.suites.single
+package galliatesting0
+package suites
+package single
 
 import gallia._
 
 // ===========================================================================
-object TranslateTest extends gallia.testing.Suite {
+object TranslateTest extends gallia.testing.Suite with gallia.testing.More {
 
   // ===========================================================================
   override def test() { import TestDataO.{Default01, Default01c, Default03, Default04, Default06, Default10, Default11}	  
@@ -16,7 +18,7 @@ object TranslateTest extends gallia.testing.Suite {
     Default11.translate(_.soleKey).usingLenient("foo" -> "oof").check(bobj('f -> "oof"))
     Default11.translate(_.soleKey).usingStrict ("foo" -> 3    ).check(bobj('f -> 3))
 
-    Default03.translate('p |> 'f ~> 'F).using("foo" -> "oof").check(bobj('p -> bobj('F -> "oof", 'g -> 1), 'z -> true))    
+    Default03.translate('p |> 'f ~> 'F).using("foo" -> "oof").check(bobj('p -> bobj('F -> "oof", 'g -> 1), 'z -> true))
     Default03.translate('p |> 'f).using("foo" -> "oof").check(bobj('p ->     TestDataO.Default01c,                        'z -> true))
     Default04.translate('p |> 'f).using("foo" -> "oof").check(bobj('p -> Seq(TestDataO.Default01c, TestDataO.Default01b), 'z -> true))
   //Default03.add('p |> 'h -> true).check(bobj('f -> "foo", 'g -> 1, 'h -> true, 'h2 -> 3))
@@ -25,7 +27,7 @@ object TranslateTest extends gallia.testing.Suite {
   
   // ===========================================================================
   private def test1(in: BObj, out: BObj) {
-    in.translate(_.firstKey)   .using("foo" -> "oof").check(out)    
+    in.translate(_.firstKey)   .using("foo" -> "oof").check(out)
     in.translate(_.allBut(1))  .using("foo" -> "oof").check(out)
     in.translate(_.allButLast ).using("foo" -> "oof").check(out)
     in.translate(_.allButFirst).using(1 -> -1).check(bobj('f -> "foo", 'g -> -1))

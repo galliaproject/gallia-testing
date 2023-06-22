@@ -1,10 +1,11 @@
-package galliatest.suites
+package galliatesting0
+package suites
 
 import gallia._
 import aptus._
 
 // ===========================================================================
-object RuntimeValidationTest extends gallia.testing.Suite {	  
+object RuntimeValidationTest extends gallia.testing.Suite with gallia.testing.More {	  
 
   // ---------------------------------------------------------------------------
   private implicit class Obj___(o: Obj) {

@@ -1,9 +1,11 @@
-package galliatest.suites.single
+package galliatesting0
+package suites
+package single
 
 import gallia._
 
 // ===========================================================================
-object RemoveIfTest extends gallia.testing.Suite {
+object RemoveIfTest extends gallia.testing.Suite with gallia.testing.More {
   import vldt._Error.TypeMismatch
 
 private val tmp201224  = aobj(cls('f.string_, 'g.int))(obj(             'g -> 1))
@@ -17,7 +19,7 @@ import TestDataO._
       Default01.forEachPath(_.explicit('p1 |> 'f, 'p2 |> 'g/* ~> 'G*/)).thn(_.removeIfValueFor(_).is("foo"))
     }
 
-    Default01.removeIfValueFor('f)                  .is     ("foo")            .check(tmp201224) // whatever    
+    Default01.removeIfValueFor('f)                  .is     ("foo")            .check(tmp201224) // whatever
     Default01.removeIfValueFor(_.firstKey          ).is     ("foo")            .check(tmp201224) // whatever
     
     Default01.removeIfValueFor(_.string('f)        ).matches(_.startsWith("f")).check(tmp201224)
@@ -39,7 +41,7 @@ import TestDataO._
     if (false) Default10.removeIfValueFor(_.allKeys).is("") // uses Whatever so doesn't error out on type - FIXME: bad...
       // same for this? Default10.removeIfValueFor(_.allKeysRecursively)//.isEmptyString.check()
 
-    Default01                         .removeIfValueFor(_.string(_.allKeys)).is("foo" ).metaError[TypeMismatch]
+    Default01                         .removeIfValueFor(_.string(_.allKeys)).is("foo").metaError[TypeMismatch]
     bobj('f1 -> "foo1", 'f2 -> "foo2").removeIfValueFor(_.string(_.allKeys)).is("foo2")
       .check(
         aobj(
@@ -84,8 +86,8 @@ import TestDataO._
 
     Default06.removeIfValueFor(_.string('f1, 'f2)).is("foo").check(aobj(cls('f1.string_, 'f2.string_, 'g.int))(obj('g -> 1)))
 
-    Default01                         .removeIfValueFor(_.string('f , 'g )).is("foo").metaError[TypeMismatch]
-    bobj('f1 -> "foo" , 'f2 -> "foo" ).removeIfValueFor(_.string('f1, 'f2)).is("foo").dataError[vldt._Error.ObjCantBeEmpty.type]
+    Default01                       .removeIfValueFor(_.string('f , 'g )).is("foo").metaError[TypeMismatch]
+    bobj('f1 -> "foo", 'f2 -> "foo").removeIfValueFor(_.string('f1, 'f2)).is("foo").dataError[vldt._Error.ObjCantBeEmpty.type]
 
     Default15p         .removeIfValueFor('f).is("foo").check(aobj(cls('f.string_, 'g.int, 'h.boolean))(obj('g -> 1, 'h -> true)))
     Default15m.noop { _.removeIfValueFor('f).is("foo") }

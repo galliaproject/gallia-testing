@@ -1,10 +1,12 @@
-package galliatest.suites.single
+package galliatesting0
+package suites
+package single
 
 import gallia._
 import gallia.vldt._Error.{Runtime => RuntimeError}
 
 // ===========================================================================
-object WhateverTest extends gallia.testing.Suite {
+object WhateverTest extends gallia.testing.Suite with gallia.testing.More {
 	import TestDataO.{Default01, Default02, Default14m, Default14p, Default17}
 
 	// ---------------------------------------------------------------------------
@@ -130,7 +132,7 @@ object WhateverTest extends gallia.testing.Suite {
     Default01.transform('f).using(_ == "foo").check(bobj('f -> true , 'g -> 1))
     Default01.transform('f).using(_ != "foo").check(bobj('f -> false, 'g -> 1))
 
-    Default01.transform('g).using(_ == 1).check(bobj('f -> "foo" , 'g -> true))
+    Default01.transform('g).using(_ == 1).check(bobj('f -> "foo", 'g -> true))
     Default01.transform('g).using(_ != 1).check(bobj('f -> "foo", 'g -> false))
 
     //Default02.transform('f).using(_.sizeString).test__ //FIXME
@@ -145,7 +147,7 @@ object WhateverTest extends gallia.testing.Suite {
     Default01.generate('g2).from('g)          .using(_ + 3)   .check(bobj('f -> "foo", 'g -> 1, 'g2 -> 4))       // uses TWV[T] with T=Int
     Default01.generate('g2).from('g)          .using(_ => 4)  .check(bobj('f -> "foo", 'g -> 1, 'g2 -> 4))       // uses     T  with T=Int (actually 4)
 
-    Default01.generate('f2).from('f, 'g).using { (f, g) => f.sizeString    * g }.check(bobj('f -> "foo", 'g -> 1, 'f2 -> 3)) // uses TWV[T] with T=Int    
+    Default01.generate('f2).from('f, 'g).using { (f, g) => f.sizeString    * g }.check(bobj('f -> "foo", 'g -> 1, 'f2 -> 3)) // uses TWV[T] with T=Int
     Default01.generate('f2).from('f, 'g).using { (f, g) => f.toString.size * g }.check(bobj('f -> "foo", 'g -> 1, 'f2 -> 3)) // uses     T  with T=Int
   //Default01.generate('f2).from('f, 'g).using { (f, g) => f.toString.size + g }.check(bobj('f -> "foo", 'g -> 1, 'f2 -> 4)) // can't because scala allows: 3 + "foo" (bad?)   
     

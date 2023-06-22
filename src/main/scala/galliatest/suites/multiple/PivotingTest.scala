@@ -1,9 +1,11 @@
-package galliatest.suites.multiple
+package galliatesting0
+package suites
+package multiple
 
 import gallia._
 
 // ===========================================================================
-object PivotingTest extends gallia.testing.Suite {
+object PivotingTest extends gallia.testing.Suite with gallia.testing.More {
   import TestDataS.{Default51, Default52}
 
   // ===========================================================================
@@ -76,7 +78,7 @@ object PivotingTest extends gallia.testing.Suite {
         obj("foo" -> Seq(obj("g" -> 1), obj("g" -> 1)), "foo2" -> Seq(obj("g" -> 2))) ))
 
       // ---------------------------------------------------------------------------
-      Default52.pivone("f").asNewKeys[galliatest.suites.MyEnum2].check(aobj(
+      Default52.pivone("f").asNewKeys[galliatesting0.suites.MyEnum2].check(aobj(
         cls("foo"     .clss_("g".int),                  "foo2"     .clss_("g".int)))(
         obj("foo" -> Seq(obj("g" -> 1), obj("g" -> 1)), "foo2" -> Seq(obj("g" -> 2))) ))
   }

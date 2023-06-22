@@ -1,12 +1,14 @@
-package galliatest.suites.multiple
+package galliatesting0
+package suites
+package multiple
 
 import gallia._
 
 // ===========================================================================
-object FlattenByTest extends gallia.testing.Suite {
-	import TestDataS._
+object FlattenByTest extends gallia.testing.Suite with gallia.testing.More {
+  import TestDataS._
 
-	// ---------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
   override def test() {
 
     bobj('f -> "foo", 'g -> Seq(1, 2, 3)).flattenBy('g).check(

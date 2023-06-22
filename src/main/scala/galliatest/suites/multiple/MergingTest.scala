@@ -1,9 +1,11 @@
-package galliatest.suites.multiple
+package galliatesting0
+package suites
+package multiple
 
 import gallia._
 
 // ===========================================================================
-object MergingTest extends gallia.testing.Suite {
+object MergingTest extends gallia.testing.Suite with gallia.testing.More {
   private val left  = bobjs(bobj('f -> "f1", 'g -> "a"), bobj('f -> "f2" , 'g -> "b"), bobj('f -> "f2", 'g -> "a"))
 
   // ---------------------------------------------------------------------------
@@ -49,16 +51,16 @@ object MergingTest extends gallia.testing.Suite {
       // ---------------------------------------------------------------------------
       val expected1 =
         bobjs(
-          bobj("f1" -> "foo" , "g1" -> 1, "g2" -> 1),
-          bobj("f1" -> "foo" , "g1" -> 1, "g2" -> 1),
-          bobj("f1" -> "foo" , "g1" -> 1, "g2" -> 1),
-          bobj("f1" -> "foo" , "g1" -> 1, "g2" -> 1),
+          bobj("f1" -> "foo", "g1" -> 1, "g2" -> 1),
+          bobj("f1" -> "foo", "g1" -> 1, "g2" -> 1),
+          bobj("f1" -> "foo", "g1" -> 1, "g2" -> 1),
+          bobj("f1" -> "foo", "g1" -> 1, "g2" -> 1),
           bobj("f1" -> "foo2", "g1" -> 2, "g2" -> 2))
 
       // ---------------------------------------------------------------------------
       val expected2 =
         bobjs(
-          bobj("f1" -> "foo"  , _left -> Seq(bobj("g1" -> 1), bobj("g1" -> 1)), _right -> Seq(bobj("g2" -> 1), bobj("g2" -> 1))),
+          bobj("f1" -> "foo", _left -> Seq(bobj("g1" -> 1), bobj("g1" -> 1)), _right -> Seq(bobj("g2" -> 1), bobj("g2" -> 1))),
           bobj("f1" -> "foo2" , _left -> Seq(bobj("g1" -> 2))                 , _right -> Seq(bobj("g2" -> 2))) )
 
       // ---------------------------------------------------------------------------

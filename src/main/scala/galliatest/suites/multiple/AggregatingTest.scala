@@ -1,9 +1,11 @@
-package galliatest.suites.multiple
+package galliatesting0
+package suites
+package multiple
 
 import gallia._
 
 // ===========================================================================
-object AggregatingTest extends gallia.testing.Suite {
+object AggregatingTest extends gallia.testing.Suite with gallia.testing.More {
 import TestDataO._
 import TestDataS._
 
@@ -13,6 +15,10 @@ import TestDataS._
 
     // ---------------------------------------------------------------------------
     // reduced to HeadV (value)
+
+    Default56.group("f1").by("g").check(bobjs(
+      bobj("g" -> 1, "f1" -> Seq("foo1", "foo1")),
+      bobj("g" -> 3, "f1" -> Seq("foo"))))
 
     Default56.aggregateBy("g").as("f1s").using(_.strings("f1")).check(bobjs(
       bobj("g" -> 1, "f1s" -> Seq("foo1", "foo1")),
@@ -166,16 +172,16 @@ Default02b.toSum ('f ~> 'F).check(bobj('F -> 6  , 'g -> 1)) // f is ints
       
     // ===========================================================================
     bobjs(
-        bobj('f -> "foo" , 'g1 -> 1, 'g2 -> 1.1),
-        bobj('f -> "foo" , 'g1 -> 2, 'g2 -> 2.5),
-        bobj('f -> "bar" , 'g1 -> 3, 'g2 -> 5.6))
+        bobj('f -> "foo", 'g1 -> 1, 'g2 -> 1.1),
+        bobj('f -> "foo", 'g1 -> 2, 'g2 -> 2.5),
+        bobj('f -> "bar", 'g1 -> 3, 'g2 -> 5.6))
       .aggregate(
             "g1".count_all,
             "g2".mean)
           .by("f")
         .check(bobjs(
-            bobj('f -> "foo" , _group -> bobj('g1 -> 2, 'g2 -> 1.8)),
-            bobj('f -> "bar" , _group -> bobj('g1 -> 1, 'g2 -> 5.6))) )
+            bobj('f -> "foo", _group -> bobj('g1 -> 2, 'g2 -> 1.8)),
+            bobj('f -> "bar", _group -> bobj('g1 -> 1, 'g2 -> 5.6))) )
   }
 
 }

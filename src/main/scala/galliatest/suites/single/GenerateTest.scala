@@ -1,16 +1,19 @@
-package galliatest.suites.single
+package galliatesting0
+package suites
+package single
 
 import gallia._
 import aptus._
 import gallia.vldt._Error.{Runtime => RuntimeError}
 
 // ===========================================================================
-object GenerateTest extends gallia.testing.Suite {
+object GenerateTest extends gallia.testing.Suite with gallia.testing.More {
 
   // ===========================================================================
   override def test() {
-import TestDataO._  
-import galliatest.TestMeta._
+    import TestDataO._  
+    import galliatesting.TestMeta._
+
     // ===========================================================================
     Default01.generate('f2).from(_.string('f)).using(_.toUpperCase).check(bobj('f -> "foo", 'g -> 1, 'f2 -> "FOO"))
     Default01.generate('f2).from(         'f ).using(_.toUpperCase).check(bobj('f -> "foo", 'g -> 1, 'f2 -> "FOO"))
@@ -104,7 +107,7 @@ aobj(
     Default01.generate('f2).from(_.string('f)).using(_.underscore)   .check(bobj('f -> "foo", 'g -> 1, 'f2 -> "foo_"))
 
     Default01.generate('f2).from('f)          .using(_ + "_2")       .check(bobj('f -> "foo", 'g -> 1, 'f2 -> "foo_2")) // uses  WV
-    Default01.generate('f2).from('f)          .using(_.sizeString)   .check(bobj('f -> "foo", 'g -> 1, 'f2 -> 3))       // uses TWV[T] with T=Int        
+    Default01.generate('f2).from('f)          .using(_.sizeString)   .check(bobj('f -> "foo", 'g -> 1, 'f2 -> 3))       // uses TWV[T] with T=Int
     Default01.generate('f2).from('f)          .using(_.toString.size).check(bobj('f -> "foo", 'g -> 1, 'f2 -> 3))       // uses     T  with T=Int
 
     // ---------------------------------------------------------------------------

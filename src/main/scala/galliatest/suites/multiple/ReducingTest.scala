@@ -1,9 +1,11 @@
-package galliatest.suites.multiple
+package galliatesting0
+package suites
+package multiple
 
 import gallia._
 
 // ===========================================================================
-object ReducingTest extends gallia.testing.Suite {
+object ReducingTest extends gallia.testing.Suite with gallia.testing.More {
 
   val Reducer0 =
     bobjs(

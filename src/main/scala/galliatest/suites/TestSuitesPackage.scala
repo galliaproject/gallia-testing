@@ -1,10 +1,9 @@
-package galliatest
+package galliatesting0
 
 // ===========================================================================
 package object suites {
-  val TestMeta  = galliatest.TestMeta
-  val TestDataO = galliatest.TestDataO
-  val TestDataS = galliatest.TestDataS
-}
+  val TestMeta  = galliatesting.TestMeta
+  val TestDataO = galliatesting.TestDataO
+  val TestDataS = galliatesting.TestDataS }
 
 // ===========================================================================

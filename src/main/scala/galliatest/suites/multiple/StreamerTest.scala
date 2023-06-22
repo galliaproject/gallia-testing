@@ -1,11 +1,12 @@
-package galliatest
-package suites.multiple
+package galliatesting0
+package suites
+package multiple
 
 import gallia._
 import aptus._
 
 // ===========================================================================
-object StreamerTest /* excluding RDDStreamer, tested in SparkTest */ extends gallia.testing.Suite {
+object StreamerTest /* excluding RDDStreamer, tested in SparkTest */ extends gallia.testing.Suite with gallia.testing.More {
 
   // ---------------------------------------------------------------------------
   override def test() {

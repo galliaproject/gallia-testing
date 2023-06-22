@@ -1,9 +1,11 @@
-package galliatest.suites.multiple
+package galliatesting0
+package suites
+package multiple
 
 import gallia._
 
 // ===========================================================================
-object StatsTest extends gallia.testing.Suite { import galliatest.suites.multiple.ReducingTest
+object StatsTest extends gallia.testing.Suite with gallia.testing.More { import galliatesting0.suites.multiple.ReducingTest
 
   // ---------------------------------------------------------------------------
   override def test() {

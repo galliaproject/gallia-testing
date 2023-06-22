@@ -1,4 +1,4 @@
-package galliatest
+package galliatesting0
 package suites
 package single
 
@@ -7,7 +7,7 @@ import gallia._
 import scala.reflect.runtime.universe.{WeakTypeTag, weakTypeTag}
 
 // ===========================================================================
-object UncommonTypesTest extends gallia.testing.Suite {
+object UncommonTypesTest extends gallia.testing.Suite with gallia.testing.More {
 
   override def test() {
     bobj('value -> new java.lang.Long(3)).noop(_.identity)
@@ -22,7 +22,7 @@ object UncommonTypesTest extends gallia.testing.Suite {
     bobj('value -> "2021-01-08T01:02:03".parseLocalDateTime).noop(_.identity) // {"value":{"date":{"year":2021,"month":1,"day":8},"time":{"hour":1,"minute":2,"second":3,"nano":0}}}
 
     // ---------------------------------------------------------------------------    
-    checkValue(           "foo" )(_.string, classOf[String])
+    checkValue           ("foo") (_.string, classOf[String])
     checkValue(byteBuffer("foo"))(_.binary, classOf[java.nio.ByteBuffer])
   }
 

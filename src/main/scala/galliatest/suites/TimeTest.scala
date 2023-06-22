@@ -1,11 +1,11 @@
-package galliatest
+package galliatesting0
 package suites
 
 import aptus._
 import java.time.ZoneId
 
 // ===========================================================================
-object TimeTest extends gallia.testing.Suite {
+object TimeTest extends gallia.testing.Suite with gallia.testing.More {
   val instant = java.time.Instant.now()
 
   // ---------------------------------------------------------------------------

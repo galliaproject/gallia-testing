@@ -1,9 +1,10 @@
-package galliatest.suites
+package galliatesting0
+package suites
 
 import gallia._
 
 // ===========================================================================
-object CustomTest extends gallia.testing.Suite {
+object CustomTest extends gallia.testing.Suite with gallia.testing.More {
 	import TestDataO._
 
 	// ---------------------------------------------------------------------------

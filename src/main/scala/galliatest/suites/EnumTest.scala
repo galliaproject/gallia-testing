@@ -1,11 +1,11 @@
-package galliatest
+package galliatesting0
 package suites
 
 import gallia._
 import aptus._
 
 // ===========================================================================
-object EnumTest extends gallia.testing.Suite {
+object EnumTest extends gallia.testing.Suite with gallia.testing.More {
 
   override def test() { import sandbox._; TestDataO.Default01.noop(_.identity)
 
@@ -50,9 +50,6 @@ object EnumTest extends gallia.testing.Suite {
 
     // ---------------------------------------------------------------------------
     gallia.reflect.ReflectUtils.enumValueNames[MyEnum].assert(_ == List("a", "b"))
-
-    // ---------------------------------------------------------------------------
-    "enums: OK".p
   }
 }
 

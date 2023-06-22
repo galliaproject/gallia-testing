@@ -1,11 +1,11 @@
-package galliatest
+package galliatesting0
 package suites
 package sandbox
 package json
 
 import aptus._
 import gallia._
-import galliatest.suites.sandbox.ic220405111107
+import galliatesting0.suites.sandbox.ic220405111107
 
 // ===========================================================================
 object JsonTest2 {

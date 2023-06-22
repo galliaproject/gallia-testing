@@ -1,12 +1,12 @@
-package galliatest.suites.single
+package galliatesting0
+package suites
+package single
 
-import scala.util.chaining._
 import gallia._
 import aptus._
-import java.time.LocalDateTime
 
 // ===========================================================================
-object TransformTest extends gallia.testing.Suite {
+object TransformTest extends gallia.testing.Suite with gallia.testing.More {
   import TestDataO._
   import TestMeta.Foo 
   import vldt.ErrorId._

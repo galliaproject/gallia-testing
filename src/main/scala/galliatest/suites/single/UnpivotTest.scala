@@ -1,9 +1,11 @@
-package galliatest.suites.single
+package galliatesting0
+package suites
+package single
 
 import gallia._
 
 // ===========================================================================
-object UnpivotTest extends gallia.testing.Suite {
+object UnpivotTest extends gallia.testing.Suite with gallia.testing.More {
 
   override def test() {
     val in  = bobj('f -> "foo", 'g -> 1,                           "a" ->       "A",              "b" ->       "B",              "c" ->       "C")

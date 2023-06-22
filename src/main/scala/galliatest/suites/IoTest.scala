@@ -1,9 +1,11 @@
-package galliatest.suites
+package galliatesting0
+package suites
 
 import gallia._
 
 // ===========================================================================
-object IoTest extends gallia.testing.Suite {	
+object IoTest extends gallia.testing.Suite with gallia.testing.More {
+
 
   override def test() {   
     // TODO: port rest from old tests

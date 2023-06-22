@@ -1,11 +1,11 @@
-package galliatest
+package galliatesting0
 package suites
 
 import aptus.Anything_ // for .assert
 import gallia._
 
 // ===========================================================================
-object SchemaInferrerTest extends gallia.testing.Suite {	
+object SchemaInferrerTest extends gallia.testing.Suite with gallia.testing.More {	
   import gallia.inferring.SchemaInferrer._
 
   // ===========================================================================

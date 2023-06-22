@@ -1,16 +1,18 @@
-package galliatest.suites.single
+package galliatesting0
+package suites
+package single
 
 import gallia._
 
 // ===========================================================================
-object CommonTransformationsTest extends gallia.testing.Suite {
+object CommonTransformationsTest extends gallia.testing.Suite with gallia.testing.More {
   import TestDataO._
 
   // ---------------------------------------------------------------------------
-  val TmpParseObject  = bobj('f -> "foo", 'g -> """{"h":true}""")  
+  val TmpParseObject  = bobj('f -> "foo", 'g -> """{"h":true}""")
   val TmpFormatObject = bobj('f -> "foo", 'g -> bobj('h -> true))
 
-  val TmpParseArray  = bobj('f -> "foo", 'g -> """[{"h":true},{"h":false}]""")  
+  val TmpParseArray  = bobj('f -> "foo", 'g -> """[{"h":true},{"h":false}]""")
   val TmpFormatArray = bobj('f -> "foo", 'g -> Seq(bobj('h -> true), bobj('h -> false)))
   
   // ===========================================================================

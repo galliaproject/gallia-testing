@@ -1,9 +1,11 @@
-package galliatest.suites.multiple
+package galliatesting0
+package suites
+package multiple
 
 import gallia._
 
 // ===========================================================================
-object SortingTest extends gallia.testing.Suite {
+object SortingTest extends gallia.testing.Suite with gallia.testing.More {
   import TestDataO._
   import TestDataS._
   import gallia.vldt._Error

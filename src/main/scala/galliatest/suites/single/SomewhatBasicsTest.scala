@@ -1,9 +1,11 @@
-package galliatest.suites.single
+package galliatesting0
+package suites
+package single
 
 import gallia._
 
 // ===========================================================================
-object SomewhatBasicsTest extends gallia.testing.Suite {
+object SomewhatBasicsTest extends gallia.testing.Suite with gallia.testing.More {
   import gallia.vldt.ErrorId.{FieldAlreadyExists, MoreThanOneKey, OutOfBoundKey}
   import TestDataO.{
     Default01, Default01b, Default01c,

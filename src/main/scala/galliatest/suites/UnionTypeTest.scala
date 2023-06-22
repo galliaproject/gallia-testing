@@ -1,4 +1,4 @@
-package galliatest
+package galliatesting0
 package suites
 
 import scala.reflect.runtime.universe.WeakTypeTag
@@ -7,7 +7,7 @@ import gallia._
 import gallia.meta.SubInfo._
 
 // ===========================================================================
-object UnionTypeTest extends gallia.testing.Suite { import sandbox._
+object UnionTypeTest extends gallia.testing.Suite with gallia.testing.More { import sandbox._
 
 	// ---------------------------------------------------------------------------
 	implicit class Float_(u: Float) { def incrementFloat: Float = u + 1 }
@@ -167,12 +167,12 @@ object UnionTypeTest extends gallia.testing.Suite { import sandbox._
     """{"f": "foo"}""".read(_.schema(c1))                                           .assertIsUnionType ("f")._silentRun()
 //todo ; error out
     // ===========================================================================
-    val bb  = aobj(cls("f1".string_ , "f2".int_, "h".boolean))(obj("f1" ->     "foo",                      "h" -> true))
+    val bb  = aobj(cls("f1".string_ , "f2".int_, "h".boolean))(obj("f1" -> "foo",                      "h" -> true))
     val bb2 = aobj(cls("f1".strings_, "f2".int_, "h".boolean))(obj("f1" -> Seq("foo1", "foo2"),            "h" -> true))
     val cc  = aobj(cls("f1".string_ , "f2".int_, "h".boolean))(obj(                             "f2" -> 3, "h" -> true))
 
     // ---------------------------------------------------------------------------
-    val aa  = aobj(cls("f".requiredUnion(string,  int), "h".boolean))(obj("f" ->     "foo",           "h" -> true))
+    val aa  = aobj(cls("f".requiredUnion(string,  int), "h".boolean))(obj("f" -> "foo",           "h" -> true))
     val aa2 = aobj(cls("f".requiredUnion(strings, int), "h".boolean))(obj("f" -> Seq("foo1", "foo2"), "h" -> true))
 
     val dd  = aobj(cls("f".requiredUnion(string,  int), "h".boolean))(obj("f" ->      3,              "h" -> true))

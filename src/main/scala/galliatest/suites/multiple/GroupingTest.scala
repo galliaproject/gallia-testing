@@ -1,11 +1,11 @@
-package galliatest
+package galliatesting0
 package suites
 package multiple
 
 import gallia._
 
 // ===========================================================================
-object GroupingTest extends gallia.testing.Suite {
+object GroupingTest extends gallia.testing.Suite with gallia.testing.More {
   import TestDataO._
   import TestDataS._
 

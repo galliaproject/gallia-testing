@@ -1,10 +1,11 @@
-package galliatest.suites
+package galliatesting0
+package suites
 
 // ===========================================================================
 package object multiple {
-  val TestMeta  = galliatest.TestMeta
-  val TestDataO = galliatest.TestDataO
-  val TestDataS = galliatest.TestDataS
+  val TestMeta  = galliatesting.TestMeta
+  val TestDataO = galliatesting.TestDataO
+  val TestDataS = galliatesting.TestDataS
     
   // ---------------------------------------------------------------------------
   val RuntimeError = gallia.vldt._Error.Runtime  

@@ -1,10 +1,11 @@
-package galliatest.suites.multiple
+package galliatesting0
+package suites
+package multiple
 
 import gallia._
-import scala.util.chaining._
 
 // ===========================================================================
-object FilterByTest extends gallia.testing.Suite {
+object FilterByTest extends gallia.testing.Suite with gallia.testing.More {
   import TestDataO._
   import TestDataS._
 
@@ -54,12 +55,12 @@ Default52.toIteratorBased.take    (1).check(bobjs(Default01))
   //Default57.filterBy(_.any_('f))   .matches(_.isDefined) // TODO: allow?
     Default57.filterBy('f).isPresent                      .check(aobjs(Default13p, Default13p2, Default13p))
   //Default57.filterBy('f).hasSize(1)                     .check(aobjs(Default13p, Default13p2, Default13p))
-    Default57.filterBy('f).hasValue(     "foo")           .check(aobjs(Default13p,              Default13p))
+    Default57.filterBy('f).hasValue("foo")           .check(aobjs(Default13p,              Default13p))
     Default57.filterBy('f).matches (_ == "foo")           .check(aobjs(Default13p,              Default13p))
     Default59.filterBy('f).hasValue(Seq( "foo1", "foo2")) .check(aobjs(Default14p,              Default14p))    
 
     // ---------------------------------------------------------------------------
-    Default52.filterBy('f, 'g).matches { (f, g) => f == "foo" && g == 1 }.check(bobjs(Default01,  Default01))    
+    Default52.filterBy('f, 'g).matches { (f, g) => f == "foo" && g == 1 }.check(bobjs(Default01,  Default01))
     Default57.filterBy('f, 'g).matches { (f, g) => f == "foo" && g == 1 }.check(aobjs(Default13p, Default13p))
     Default52.filterBy('f, 'g).hasValues("foo", 1).check(bobjs(Default01,  Default01))
     Default57.filterBy('f, 'g).hasValues("foo", 1).check(aobjs(Default13p, Default13p))

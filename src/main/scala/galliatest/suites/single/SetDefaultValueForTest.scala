@@ -1,9 +1,11 @@
-package galliatest.suites.single
+package galliatesting0
+package suites
+package single
 
 import gallia._
 
 // ===========================================================================
-object SetDefaultValueForTest extends gallia.testing.Suite {
+object SetDefaultValueForTest extends gallia.testing.Suite with gallia.testing.More {
 
   override def test() {
     test1(in = TestDataO.Default13m)

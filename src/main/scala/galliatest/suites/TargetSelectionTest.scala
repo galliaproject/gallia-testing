@@ -1,10 +1,10 @@
-package galliatest.suites
+package galliatesting0
+package suites
 
-import scala.util.chaining._
 import gallia._
 
 // ===========================================================================
-object TargetSelectionTest extends gallia.testing.Suite {	
+object TargetSelectionTest extends gallia.testing.Suite with gallia.testing.More {	
   import TestDataO._
       
   override def test() {
@@ -15,7 +15,7 @@ object TargetSelectionTest extends gallia.testing.Suite {
     Default02.transform(_.typedx[    String] ("f")).using(      _.reverse ).check(Default02y)
     Default02.transform(_.typed [Seq[String]]("f")).using(_.map(_.reverse)).check(Default02y)  
     
-    bobj("value" -> byteBuffer("foo")).transform(_.binary("value")).using(_.mapBytes(_.reverse)).check(bobj("value" -> byteBuffer("oof")))    
+    bobj("value" -> byteBuffer("foo")).transform(_.binary("value")).using(_.mapBytes(_.reverse)).check(bobj("value" -> byteBuffer("oof")))
   }
 
 }

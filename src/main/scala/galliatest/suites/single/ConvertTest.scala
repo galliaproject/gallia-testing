@@ -1,11 +1,13 @@
-package galliatest.suites.single
+package galliatesting0
+package suites
+package single
 
 import aptus.String_ // for .date
 import gallia._
 import gallia.vldt._Error.Runtime
 
 // ===========================================================================
-object ConvertTest extends gallia.testing.Suite {
+object ConvertTest extends gallia.testing.Suite with gallia.testing.More {
   import TestDataO._
 
   // ---------------------------------------------------------------------------
@@ -20,7 +22,7 @@ object ConvertTest extends gallia.testing.Suite {
     Default04.convert('p |> 'g).toDouble.check(bobj('p -> Seq(bobj('f -> "foo", 'g -> 1.0), bobj('f -> "foo2", 'g -> 2.0)), 'z -> true))
 
     val outputPresent = aobj(cls('f.string, 'g.int_))(obj('f -> "foo", 'g ->  1 ))
-    val outputMissing = aobj(cls('f.string, 'g.int_))(obj('f -> "foo"           ))
+    val outputMissing = aobj(cls('f.string, 'g.int_))(obj('f -> "foo"))
 
     Default01.convert('g).toOptional                  .check(outputPresent)
     Default01.convert('g).toOptional(strict = true)   .check(outputPresent)

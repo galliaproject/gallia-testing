@@ -1,9 +1,11 @@
-package galliatest.suites.single
+package galliatesting0
+package suites
+package single
 
 import gallia._
 
 // ===========================================================================
-object AssertTest extends gallia.testing.Suite {
+object AssertTest extends gallia.testing.Suite with gallia.testing.More {
   import TestDataO.{
     Default01, Default02,
     Default13m, Default13p, Default14m, Default14p}
