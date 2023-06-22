@@ -14,19 +14,15 @@ lazy val root = (project in file("."))
     licenses             := Seq("BSL 1.1" -> url("https://github.com/galliaproject/gallia-testing/blob/master/LICENSE")),
     description          := "A Scala library for data manipulation" )
   .settings(GalliaCommonSettings.mainSettings:_*)
-
-// ===========================================================================
-libraryDependencies += "io.github.galliaproject" %% "gallia-core" % GalliaCommonSettings.CurrentGalliaVersion
+  .dependsOn(RootProject(file("../gallia-core")) % "test->test") // see below
+//libraryDependencies += "io.github.galliaproject" %% "gallia-core" % GalliaCommonSettings.CurrentGalliaVersion
 
 // ---------------------------------------------------------------------------
 // TODO: t210114171154, use existing testing library (or implement sbt-testing interfaces?)
-libraryDependencies += "org.yaml" % "snakeyaml" % "1.30"
+  // note: in the process of moving all tests to using utest (see gallia-core's test folder)
 
-// ===========================================================================
-sonatypeRepository     := "https://s01.oss.sonatype.org/service/local"
-sonatypeCredentialHost :=         "s01.oss.sonatype.org"
-publishMavenStyle      := true
-publishTo              := sonatypePublishToBundle.value
+// ---------------------------------------------------------------------------
+libraryDependencies += "org.yaml" % "snakeyaml" % "1.30"
 
 // ===========================================================================
 

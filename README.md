@@ -1,11 +1,11 @@
 <p align="center"><img src="./images/logo.png" alt="icon"></p>
 
-# Gallia Testing
+# ~~Gallia Testing~~ (will deprecated soon*)
 
 Tests can be run with:
 
 ```
-sbt "runMain galliatest.AllTests"
+sbt "Test / runMain galliatesting0.AllTests"
 ```
 
 Also see:
@@ -22,3 +22,6 @@ See original announcement on the [Scala Users list](https://users.scala-lang.org
 For further announcements, follow me on Twitter at [@AnthonyCros](https://twitter.com/anthony_cros)
 
 <p align="center"><img src="./images/logo.png" alt="icon"></p>
+
+<hr/>
+* Tests are being ported to `ujson` under `gallia-core` instead (see task `t214360121145`)
