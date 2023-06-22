@@ -73,7 +73,7 @@ object JsonTest2 {
   private def common(jsonValue: String)(f: String => Fld): AObj =
     s"""{"g": ${jsonValue}}"""
       .read(_.schema(f("g")))
-      ._forceResult.o.pipe(toDebug)
+      ._forceResult.o.debugObj
       .pipe(AObj(Cls.oneString("g"), _))
 
 }

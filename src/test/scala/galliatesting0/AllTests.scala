@@ -61,7 +61,7 @@ object AllTests extends App {
     RuntimeValidationTest,
     UnionTypeTest,
     EnumTest,
-    TimeTest,
+    //TimeTest, -> moved to gallia-core (using utest)
     MetaSchemaTest,
   )
   if (false) Obg9Test // obg9 is codename for memory-optimized Obj counterpart (not in use yet) - good for dense data

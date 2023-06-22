@@ -5,7 +5,10 @@ import aptus._
 import gallia._
 
 // ===========================================================================
-package object sandbox {
+package object sandbox
+    extends galliatesting.utils.GalliaTestingObj
+    with    galliatesting.utils.GalliaTestingAObj
+    with    galliatesting.utils.GalliaTestingHeadO {
   val _Optional = true
   val _Multiple = true
 
@@ -17,77 +20,16 @@ package object sandbox {
 
   // ===========================================================================
   implicit class Obj220405111108(o: Obj) {
-    def forceKey   (key: Key):        Any  = o._data.find  (_._1 == key).map(_._2).get
-
-    // ---------------------------------------------------------------------------
-    def debugObj(): Obj = toDebug(o)
-
-    // ---------------------------------------------------------------------------
-    def exactlyEquals(that: Obj): Boolean =
-      o          == that &&
-      o.debugObj == that.debugObj
+    def forceKey(key: Key): Any  = o._data.find  (_._1 == key).map(_._2).get
   }
 
   // ===========================================================================
   implicit class ic220405111107(aobj: AObj) {
-      def display2() = { aobj.identity.display2() }
+      def display2() = { aobj.identity.display2() } }
 
-      // ---------------------------------------------------------------------------
-      def exactlyEquals(that: AObj): Boolean =
-        aobj.c            == that.c &&
-        aobj.o.exactlyEquals(that.o)
+    // ---------------------------------------------------------------------------
+    implicit class ic220512122102(aobj: AObjs) { //    def display2() = { aobj.identity.display2() }
 
-      // ---------------------------------------------------------------------------
-      def formatSandbox =
-        Seq(
-          aobj.c         .formatDefault,
-          aobj.o         .formatDefault,
-          aobj.o.debugObj.formatDefault)
-        .joinln
-
-      // ---------------------------------------------------------------------------
-      def _assert2(expected: AObj) = {
-        assert(
-          exactlyEquals(expected),
-          Seq(
-              expected.formatSandbox.sectionAllOff("expected:"),
-              aobj    .formatSandbox.sectionAllOff("actual:"))
-            .section) }
-
-      // ---------------------------------------------------------------------------
-      def _assert2(origin: AObj, expected: AObj) = {
-        assert(
-          aobj.c == expected.c,
-          Seq(
-              expected.c.formatDefault.sectionAllOff("expected:"),
-              aobj    .c.formatDefault.sectionAllOff("actual:"),
-              origin  .c.formatDefault.sectionAllOff("origin:"))
-            .section )
-
-        // ---------------------------------------------------------------------------
-        assert(
-          toDebug(aobj.o) == toDebug(expected.o),
-          Seq(
-            toDebug(expected.o).formatDefault.sectionAllOff("expected:"),
-            toDebug(aobj    .o).formatDefault.sectionAllOff("actual:"),
-            toDebug(origin  .o).formatDefault.sectionAllOff("origin:"))
-            .section)
-
-        // ---------------------------------------------------------------------------
-        assert(
-          aobj.o == expected.o,
-          Seq(
-              expected.o.formatDefault.sectionAllOff("expected:"),
-              aobj    .o.formatDefault.sectionAllOff("actual:"),
-              origin  .o.formatDefault.sectionAllOff("origin:"))
-            .section)
-      }
-
-    }
-
-    implicit class ic220512122102(aobj: AObjs) {
-  //    def display2() = { aobj.identity.display2() }
-  //
       // ---------------------------------------------------------------------------
       def exactlyEquals(that: AObjs): Boolean =
         aobj.c            == that.c &&
@@ -155,8 +97,6 @@ package object sandbox {
 //              @aptus.fordevonly def _silentRun(): HeadZ = head.tap { _._forceResult }
             }
 
-  // ===========================================================================
-  private[sandbox] def toDebug(o: Obj): Obj = o.modifyValuesRecursively { bsc => s"${bsc.getClass.getSimpleName}:|${bsc}|" }
 }
 
 // ===========================================================================
