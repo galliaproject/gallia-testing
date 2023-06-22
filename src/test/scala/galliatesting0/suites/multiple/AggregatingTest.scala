@@ -18,7 +18,7 @@ import TestDataS._
 
     Default56.group("f1").by("g").check(bobjs(
       bobj("g" -> 1, "f1" -> Seq("foo1", "foo1")),
-      bobj("g" -> 3, "f1" -> Seq("foo"))))
+      bobj("g" -> 3, "f1" -> Seq("foo3"))))
 
     Default56.aggregateBy("g").as("f1s").using(_.strings("f1")).check(bobjs(
       bobj("g" -> 1, "f1s" -> Seq("foo1", "foo1")),
