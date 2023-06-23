@@ -6,7 +6,8 @@ object AllTests extends App {
 
   // ---------------------------------------------------------------------------
   gallia.testing.More.testSuites(
-    single.VeryBasicsTest,
+  //single.VeryBasicsTest, -> moved to gallia-core (using utest) - split up
+    single.MiscSingleTest,
     single.SomewhatBasicsTest,
 
     single.SetDefaultValueForTest,
