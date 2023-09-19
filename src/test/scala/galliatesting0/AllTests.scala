@@ -9,8 +9,7 @@ object AllTests extends App {
   //single.VeryBasicsTest,     -> moved to gallia-core (using utest) - split up
   //single.SomewhatBasicsTest, -> moved to gallia-core (using utest) - split up
 
-    single.SetDefaultValueForTest,
-    single.TranslateTest,
+  //single.SetDefaultValueForTest, -> moved to gallia-core (using utest)
     single.RemoveIfTest,
     single.ConvertTest,
     
